@@ -1,4 +1,5 @@
-﻿using HouseScout.model;
+﻿using HouseScout.Clients;
+using HouseScout.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         var builder = new ConfigurationBuilder();
         BuildConfig(builder);
@@ -22,13 +23,9 @@ class Program
         using (var scope = host.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
-
             try
             {
                 var context = services.GetRequiredService<HouseScoutContext>();
-                context.Estates.Add(new Estate());
-                Console.WriteLine(context.Estates.ToList());
-                context.SaveChanges();
                 
                 Console.WriteLine("Database context created successfully!");
             }
@@ -37,7 +34,6 @@ class Program
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
-
 
     }
 

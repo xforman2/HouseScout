@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace HouseScout.model;
+namespace HouseScout.Model;
 
 public class HouseScoutContext : DbContext
 {
