@@ -1,34 +1,28 @@
-using System;
-
-namespace HouseScout.model
+namespace HouseScout.Model;
+    
+public class Estate
 {
-    public class Estate
+    public Estate(string api, string apiId, string address, double price, double energyPrice, string link, double surface, string estateType, string offerType)
     {
-        public int Id { get; set; }
-        public int Api { get; set; }
-        public string ApiId { get; set; }
-        public int Address { get; set; }
-        public double Price { get; set; }
-        public double EnergyPrice { get; set; }
-        public string Link { get; set; }
-        public double Surface { get; set; }
-        public int EstateType { get; set; }
-        public int OfferType { get; set; }
-
-        public Estate()
-        {
-            var random = new Random();
-
-            Id = random.Next(1, 1000);
-            Api = random.Next(1, 10);
-            ApiId = Guid.NewGuid().ToString();
-            Address = random.Next(1000, 9999);
-            Price = Math.Round(random.NextDouble() * 1000000, 2);
-            EnergyPrice = Math.Round(random.NextDouble() * 1000, 2);
-            Link = $"https://example.com/estate/{Id}";
-            Surface = Math.Round(random.NextDouble() * 1000, 2);
-            EstateType = random.Next(1, 5);
-            OfferType = random.Next(1, 3);
-        }
+        Api = api;
+        ApiId = apiId;
+        Address = address;
+        Price = price;
+        EnergyPrice = energyPrice;
+        Link = link;
+        Surface = surface;
+        EstateType = estateType;
+        OfferType = offerType;
     }
+
+    public int Id { get; set; }
+    public string Api { get; set; }
+    public string ApiId { get; set; }
+    public string Address { get; set; }
+    public double Price { get; set; }
+    public double EnergyPrice { get; set; }
+    public string Link { get; set; }
+    public double Surface { get; set; }
+    public string EstateType { get; set; }
+    public string OfferType { get; set; }
 }
