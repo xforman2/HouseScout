@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace HouseScout.Clients
 {
-    public class GraphQLClient
+    public class BezrealitkyGraphQLClient
     {
         private readonly GraphQLHttpClient _client;
 
-        public GraphQLClient()
+        public BezrealitkyGraphQLClient()
         {
             _client = new GraphQLHttpClient("https://api.bezrealitky.cz/graphql/", new NewtonsoftJsonSerializer());
         }
