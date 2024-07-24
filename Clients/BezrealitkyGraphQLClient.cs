@@ -16,7 +16,7 @@ namespace HouseScout.Clients
             _client = new GraphQLHttpClient("https://api.bezrealitky.cz/graphql/", new NewtonsoftJsonSerializer());
         }
 
-        public async Task<AdvertsResponse> GetAdvertsAsync()
+        public async Task<BezrealitkyResponse> GetAdvertsAsync()
         {
             var query = @"
             query ListAdverts {
@@ -47,7 +47,7 @@ namespace HouseScout.Clients
                 Query = query
             };
             
-            var response = await _client.SendQueryAsync<AdvertsResponse>(request);
+            var response = await _client.SendQueryAsync<BezrealitkyResponse>(request);
             
             if (response.Errors != null && response.Errors.Length > 0)
             {
@@ -83,7 +83,7 @@ namespace HouseScout.Clients
         public List<Advert> List { get; set; }
     }
 
-    public class AdvertsResponse
+    public class BezrealitkyResponse
     {
         public ListAdverts ListAdverts { get; set; }
     }
