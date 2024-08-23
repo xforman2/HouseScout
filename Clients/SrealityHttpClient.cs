@@ -29,13 +29,13 @@ namespace HouseScout.Clients
         }
     }
 
-    public class Estate
+    public class EstateDTO
     {
         [JsonProperty("hash_id")]
-        public long Id { get; set; }
+        public string Id { get; set; }
 
         [JsonProperty("price")]
-        public decimal Price { get; set; }
+        public double Price { get; set; }
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("locality")]
@@ -62,7 +62,7 @@ namespace HouseScout.Clients
     public class Embedded
     {
         [JsonProperty("estates")]
-        public List<Estate> Estates { get; set; }
+        public List<EstateDTO> Estates { get; set; }
     }
 
     public class SrealityResponse
