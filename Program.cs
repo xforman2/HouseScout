@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.WebSocket;
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
