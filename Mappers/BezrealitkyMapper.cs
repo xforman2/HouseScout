@@ -16,8 +16,13 @@ public class BezrealitkyMapper
     }
     private Estate MapSingleToModel(Advert estate)
     {
-        return new Estate("bezrealitky", estate.Id, estate.Address, estate.Price, estate.Uri, estate.Surface,
+        return new Estate("bezrealitky", estate.Id, estate.Address, estate.Price, CreateURL(estate.Uri), estate.Surface,
             estate.EstateType, estate.OfferType);
 
+    }
+
+    private string CreateURL(string uncompleteUri)
+    {
+        return $"https://www.bezrealitky.cz/nemovitosti-byty-domy/{uncompleteUri}";
     }
 }
