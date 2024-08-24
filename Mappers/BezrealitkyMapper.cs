@@ -16,7 +16,7 @@ public class BezrealitkyMapper
     }
     private Estate MapSingleToModel(Advert estate)
     {
-        return new Estate("bezrealitky", estate.Id, estate.Address, estate.Price, estate.Charges, estate.Uri, estate.Surface,
+        return new Estate("bezrealitky", estate.Id, estate.Address, estate.Price, estate.Uri, estate.Surface,
             estate.EstateType, estate.OfferType);
 
     }

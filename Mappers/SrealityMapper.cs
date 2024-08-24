@@ -16,7 +16,7 @@ public class SrealityMapper
     }
     private Estate MapSingleToModel(EstateDTO estate)
     {
-        return new Estate("sreality", estate.Id, estate.Locality, estate.Price, 0, CreateURL(estate), CreateSurface(estate), "BYT", "PRONAJEM");
+        return new Estate("sreality", estate.Id, estate.Locality, estate.Price, CreateURL(estate), CreateSurface(estate), "BYT", "PRONAJEM");
 
     }
     /// <summary>
