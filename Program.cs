@@ -50,6 +50,7 @@ class Program
         // Main scope of application
         using (var scope = host.Services.CreateScope())
         {
+            //TODO this is just temp, delete later
             var services = scope.ServiceProvider;
             var dbContext = services.GetRequiredService<HouseScoutContext>();
 
