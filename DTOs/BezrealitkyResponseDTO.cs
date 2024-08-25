@@ -1,6 +1,16 @@
-namespace HouseScout.Model;
+namespace HouseScout.DTOs;
 
-public class Advert
+public class BezrealitkyResponseDTO
+{ 
+    public ListAdverts ListAdverts { get; set; }
+}
+
+public class ListAdverts
+{
+    public List<BezrealitkyEstate> List { get; set; }
+}
+
+public class BezrealitkyEstate
 {
     public string Id { get; set; }
     public string Uri { get; set; }
