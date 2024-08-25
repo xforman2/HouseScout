@@ -10,7 +10,13 @@ public class Estate
     public string Link { get; set; }
     public double Surface { get; set; }
     public string EstateType { get; set; }
-    public string OfferType { get; set; }       
+    public string OfferType { get; set; }
+
+    // for seeding to work, do not remove
+    public Estate()
+    {
+        
+    }
     public Estate(string api, string apiId, string address, double price, string link, double surface, string estateType, string offerType)
     {
         Api = api;
