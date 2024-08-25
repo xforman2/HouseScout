@@ -4,6 +4,7 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using HouseScout.Model;
 using System;
 using System.Threading.Tasks;
+using HouseScout.DTOs;
 
 namespace HouseScout.Clients
 {
@@ -16,7 +17,7 @@ namespace HouseScout.Clients
             _client = new GraphQLHttpClient("https://api.bezrealitky.cz/graphql/", new NewtonsoftJsonSerializer());
         }
 
-        public async Task<BezrealitkyResponse> GetAdvertsAsync()
+        public async Task<BezrealitkyResponseDTO> GetAdvertsAsync()
         {
             var query = @"
             query ListAdverts {
@@ -46,9 +47,9 @@ namespace HouseScout.Clients
             {
                 Query = query
             };
-            
-            var response = await _client.SendQueryAsync<BezrealitkyResponse>(request);
-            
+
+            var response = await _client.SendQueryAsync<BezrealitkyResponseDTO>(request);
+
             if (response.Errors != null && response.Errors.Length > 0)
             {
                 foreach (var error in response.Errors)
@@ -62,29 +63,5 @@ namespace HouseScout.Clients
 
             return response.Data;
         }
-    }
-    
-    public class Advert
-    {
-        public string Id { get; set; }
-        public string Uri { get; set; }
-        public string Address { get; set; }
-        public string OfferType { get; set; }
-        public string EstateType { get; set; }
-        public int ServiceCharges { get; set; }
-        public int UtilityCharges { get; set; }
-        public int Surface { get; set; }
-        public int Charges { get; set; }
-        public int Price { get; set; }
-    }
-
-    public class ListAdverts
-    {
-        public List<Advert> List { get; set; }
-    }
-
-    public class BezrealitkyResponse
-    {
-        public ListAdverts ListAdverts { get; set; }
     }
 }
