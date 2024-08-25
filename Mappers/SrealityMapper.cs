@@ -20,9 +20,9 @@ public class SrealityMapper
 
     }
     /// <summary>
-    /// funkcia existuje kvoli tomu ze sreality dava do url typ bytu/domu (uplne zbytocne)
+    /// method exists because sreality puts type of home/flat into url
     /// </summary>
-    /// <param name="input"> meno v systeme sreality, z ktoreho treba sparsovat type do url</param>
+    /// <param name="input"> name in sreality system from which the type of home/flat is extracted</param>
     /// <returns></returns>
     private string GetCategory(string input)
     {
@@ -33,21 +33,21 @@ public class SrealityMapper
 
         if (match.Success)
         {   
-            // case pre num+num
+            // case for num+num
             if (match.Groups[1].Success && match.Groups[2].Success)
             {
                 int number1 = int.Parse(match.Groups[1].Value);
                 int number2 = int.Parse(match.Groups[2].Value);
                 return $"{number1}+{number2}";
             }
-            // case pre num+kk
+            // case for num+kk
             if (match.Groups[3].Success)
             {
                 int number = int.Parse(match.Groups[3].Value);
                 return $"{number}+kk";
             }
         }
-        // potom este existuju 6 a vice, pokoj a atypicke
+        // cases for other types, 6 a vice, pokoj and atypicke
         if (input.Contains("6 pokojů a více"))
         {
             return "6-a-vice";
