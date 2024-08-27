@@ -18,14 +18,14 @@ public class DbSeeder
         if (!_context.Estates.Any())
         {
             var estateFaker = new Faker<Estate>()
-                .RuleFor(e => e.Api, f => f.Internet.DomainName())
+                .RuleFor(e => e.ApiType, f => f.PickRandom<ApiType>())
                 .RuleFor(e => e.ApiId, f => f.Random.Guid().ToString())
                 .RuleFor(e => e.Address, f => f.Address.FullAddress())
-                .RuleFor(e => e.Price, f => f.Random.Double(100000, 1000000))
+                .RuleFor(e => e.Price, f => f.Random.Decimal(100000, 1000000))
                 .RuleFor(e => e.Link, f => f.Internet.Url())
                 .RuleFor(e => e.Surface, f => f.Random.Double(50, 500))
-                .RuleFor(e => e.EstateType, f => f.PickRandom(new[] { "House", "Apartment" }))
-                .RuleFor(e => e.OfferType, f => f.PickRandom(new[] { "Sale", "Rent" }));
+                .RuleFor(e => e.EstateType, f => f.PickRandom<EstateType>())
+                .RuleFor(e => e.OfferType, f => f.PickRandom<OfferType>());
 
             var estates = estateFaker.Generate(500); 
 

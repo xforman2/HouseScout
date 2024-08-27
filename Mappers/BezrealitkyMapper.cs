@@ -1,23 +1,22 @@
 using HouseScout.Clients;
+using HouseScout.DTOs;
 using HouseScout.Model;
-using Advert = HouseScout.Clients.Advert;
-using BezrealitkyResponse = HouseScout.Clients.BezrealitkyResponse;
 
 namespace HouseScout.Mappers;
 
 public class BezrealitkyMapper
 {
-    public List<Estate> MapResponseToModel(BezrealitkyResponse response)
+    public List<Estate> MapResponseToModel(BezrealitkyResponseDTO response)
     {
         var estatesFromResponse = response.ListAdverts.List;
 
         return estatesFromResponse.Select(MapSingleToModel).ToList();
 
     }
-    private Estate MapSingleToModel(Advert estate)
+    private Estate MapSingleToModel(BezrealitkyEstate estate)
     {
-        return new Estate("bezrealitky", estate.Id, estate.Address, estate.Price, CreateURL(estate.Uri), estate.Surface,
-            estate.EstateType, estate.OfferType);
+        return new Estate(ApiType.BEZREALITKY, estate.Id, estate.Address, estate.Price, CreateURL(estate.Uri), estate.Surface,
+            EstateType.APARTMENT, OfferType.RENT);
 
     }
 

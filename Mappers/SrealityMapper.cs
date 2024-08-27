@@ -1,22 +1,22 @@
 using System.Text.RegularExpressions;
 using HouseScout.Clients;
+using HouseScout.DTOs;
 using HouseScout.Model;
-using Advert = HouseScout.Model.Advert;
 
 namespace HouseScout.Mappers;
 
 public class SrealityMapper
 {
-    public List<Estate> MapResponseToModel(SrealityResponse response)
+    public List<Estate> MapResponseToModel(SrealityResponseDTO responseDto)
     {
-        var estatesFromResponse = response.Embedded.Estates;
+        var estatesFromResponse = responseDto.Embedded.Estates;
 
         return estatesFromResponse.Select(MapSingleToModel).ToList();
 
     }
-    private Estate MapSingleToModel(EstateDTO estate)
+    private Estate MapSingleToModel(SrealityEstate srealityEstate)
     {
-        return new Estate("sreality", estate.Id, estate.Locality, estate.Price, CreateURL(estate), CreateSurface(estate), "BYT", "PRONAJEM");
+        return new Estate(ApiType.SREALITY, srealityEstate.Id, srealityEstate.Locality, srealityEstate.Price, CreateURL(srealityEstate), CreateSurface(srealityEstate), EstateType.APARTMENT, OfferType.RENT);
 
     }
     /// <summary>
@@ -65,16 +65,16 @@ public class SrealityMapper
         return "unknown";
     }
 
-    private string CreateURL(EstateDTO estate)
+    private string CreateURL(SrealityEstate srealityEstate)
     {
         
-        return $"https://www.sreality.cz/detail/pronajem/byt/{GetCategory(estate.Name)}/{estate.Seo.Locality}/{estate.Id}";
+        return $"https://www.sreality.cz/detail/pronajem/byt/{GetCategory(srealityEstate.Name)}/{srealityEstate.Seo.Locality}/{srealityEstate.Id}";
     }
 
-    private int CreateSurface(EstateDTO estate)
+    private int CreateSurface(SrealityEstate srealityEstate)
     {
         string pattern = @"(\d+)\s?m²";
-        Match match = Regex.Match(estate.Name, pattern);
+        Match match = Regex.Match(srealityEstate.Name, pattern);
         
         if (match.Success)
         {
