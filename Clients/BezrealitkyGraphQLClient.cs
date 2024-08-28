@@ -10,16 +10,8 @@ namespace HouseScout.Clients
 {
     public class BezrealitkyGraphQLClient : IClient
     {
-        private readonly GraphQLHttpClient _client;
-
-        public BezrealitkyGraphQLClient()
-        {
-            _client = new GraphQLHttpClient("https://api.bezrealitky.cz/graphql/", new NewtonsoftJsonSerializer());
-        }
-
-        public async Task<object> FetchDataAsync()
-        {
-            var query = @"
+        private const string BEZREALITKY_ENDPOINT = "https://api.bezrealitky.cz/graphql/";
+        private const string QUERY = @"
             query ListAdverts {
                 listAdverts(
                     offerType: PRONAJEM
@@ -42,10 +34,19 @@ namespace HouseScout.Clients
                     }
                 }
             }";
+        private readonly GraphQLHttpClient _client;
+
+        public BezrealitkyGraphQLClient()
+        {
+            _client = new GraphQLHttpClient(BEZREALITKY_ENDPOINT, new NewtonsoftJsonSerializer());
+        }
+
+        public async Task<object> FetchDataAsync()
+        {
 
             var request = new GraphQLRequest
             {
-                Query = query
+                Query = QUERY
             };
 
             var response = await _client.SendQueryAsync<BezrealitkyResponseDTO>(request);
@@ -56,9 +57,6 @@ namespace HouseScout.Clients
                 {
                     Console.WriteLine($"Error: {error.Message}");
                 }
-
-                // TODO throw exception
-                return null;
             }
 
             return response.Data;
