@@ -1,5 +1,5 @@
 namespace HouseScout.Model;
-    
+
 public class Estate
 {
     public int Id { get; set; }
@@ -13,11 +13,18 @@ public class Estate
     public OfferType OfferType { get; set; }
 
     // for seeding to work, do not remove
-    public Estate()
-    {
-        
-    }
-    public Estate(ApiType apiType, string apiId, string address, decimal price, string link, double surface, EstateType estateType, OfferType offerType)
+    public Estate() { }
+
+    public Estate(
+        ApiType apiType,
+        string apiId,
+        string address,
+        decimal price,
+        string link,
+        double surface,
+        EstateType estateType,
+        OfferType offerType
+    )
     {
         ApiType = apiType;
         ApiId = apiId;

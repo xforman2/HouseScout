@@ -1,14 +1,14 @@
-using Discord;
-using Discord.WebSocket;
-using Discord.Interactions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using Discord;
+using Discord.Interactions;
+using Discord.WebSocket;
 using HouseScout.Clients;
 using HouseScout.Mappers;
 using HouseScout.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 class Program
 {
@@ -27,7 +27,7 @@ class Program
         _client.Log += LogAsync;
         _interactionService.Log += LogAsync;
 
-        // Register the interaction handler                     
+        // Register the interaction handler
         _client.InteractionCreated += async interaction =>
         {
             var context = new SocketInteractionContext(_client, interaction);
@@ -46,7 +46,7 @@ class Program
             await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), host.Services);
             await _interactionService.RegisterCommandsGloballyAsync();
         };
-        
+
         // Main scope of application
         using (var scope = host.Services.CreateScope())
         {
@@ -77,23 +77,37 @@ class Program
 
     private static IHostBuilder CreateHostBuilder() =>
         Host.CreateDefaultBuilder()
-            .ConfigureServices((context, services) =>
-            {
-                var configuration = context.Configuration;
+            .ConfigureServices(
+                (context, services) =>
+                {
+                    var configuration = context.Configuration;
 
-                services.AddSingleton(configuration)
-                        .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
-                        {
-                            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
-                        }))
-                        .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+                    services
+                        .AddSingleton(configuration)
+                        .AddSingleton(
+                            new DiscordSocketClient(
+                                new DiscordSocketConfig
+                                {
+                                    GatewayIntents =
+                                        GatewayIntents.AllUnprivileged
+                                        | GatewayIntents.MessageContent,
+                                }
+                            )
+                        )
+                        .AddSingleton(x => new InteractionService(
+                            x.GetRequiredService<DiscordSocketClient>()
+                        ))
                         .AddDbContext<HouseScoutContext>(options =>
-                            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")))
+                            options.UseNpgsql(
+                                configuration.GetConnectionString("DefaultConnection")
+                            )
+                        )
                         .AddSingleton<BezrealitkyGraphQLClient>()
                         .AddSingleton<SrealityHttpClient>()
                         .AddSingleton<BezrealitkyMapper>()
                         .AddSingleton<SrealityMapper>();
-            });
+                }
+            );
 
     private static Task LogAsync(LogMessage log)
     {
