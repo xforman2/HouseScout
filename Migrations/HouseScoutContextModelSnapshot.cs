@@ -33,28 +33,25 @@ namespace HouseScout.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Api")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("ApiId")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("EstateType")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("ApiType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EstateType")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Link")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("OfferType")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("OfferType")
+                        .HasColumnType("integer");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
 
                     b.Property<double>("Surface")
                         .HasColumnType("double precision");
