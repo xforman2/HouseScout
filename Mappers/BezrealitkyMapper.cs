@@ -4,11 +4,12 @@ using HouseScout.Model;
 
 namespace HouseScout.Mappers;
 
-public class BezrealitkyMapper
+public class BezrealitkyMapper : IMapper
 {
-    public List<Estate> MapResponseToModel(BezrealitkyResponseDTO response)
+    public List<Estate> MapResponseToModel(object response)
     {
-        var estatesFromResponse = response.ListAdverts.List;
+        BezrealitkyResponseDTO responseDto = (BezrealitkyResponseDTO) response;
+        var estatesFromResponse = responseDto.ListAdverts.List;
 
         return estatesFromResponse.Select(MapSingleToModel).ToList();
 
