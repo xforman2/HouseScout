@@ -8,7 +8,7 @@ using HouseScout.DTOs;
 
 namespace HouseScout.Clients
 {
-    public class BezrealitkyGraphQLClient
+    public class BezrealitkyGraphQLClient : IClient
     {
         private readonly GraphQLHttpClient _client;
 
@@ -17,7 +17,7 @@ namespace HouseScout.Clients
             _client = new GraphQLHttpClient("https://api.bezrealitky.cz/graphql/", new NewtonsoftJsonSerializer());
         }
 
-        public async Task<BezrealitkyResponseDTO> GetAdvertsAsync()
+        public async Task<object> FetchDataAsync()
         {
             var query = @"
             query ListAdverts {
