@@ -1,9 +1,6 @@
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
-using HouseScout.Model;
-using System;
-using System.Threading.Tasks;
 using HouseScout.DTOs;
 
 namespace HouseScout.Clients
@@ -11,7 +8,8 @@ namespace HouseScout.Clients
     public class BezrealitkyGraphQLClient : IClient
     {
         private const string BEZREALITKY_ENDPOINT = "https://api.bezrealitky.cz/graphql/";
-        private const string QUERY = @"
+        private const string QUERY =
+            @"
             query ListAdverts {
                 listAdverts(
                     offerType: PRONAJEM
@@ -43,11 +41,7 @@ namespace HouseScout.Clients
 
         public async Task<object> FetchDataAsync()
         {
-
-            var request = new GraphQLRequest
-            {
-                Query = QUERY
-            };
+            var request = new GraphQLRequest { Query = QUERY };
 
             var response = await _client.SendQueryAsync<BezrealitkyResponseDTO>(request);
 

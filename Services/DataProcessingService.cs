@@ -9,7 +9,10 @@ public class DataProcessingService
     private readonly Dictionary<IClient, IMapper> _clientsAndMappers;
     private readonly HouseScoutContext _context;
 
-    public DataProcessingService(Dictionary<IClient, IMapper> clientsAndMappers, HouseScoutContext context)
+    public DataProcessingService(
+        Dictionary<IClient, IMapper> clientsAndMappers,
+        HouseScoutContext context
+    )
     {
         _clientsAndMappers = clientsAndMappers;
         _context = context;
