@@ -1,10 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using HouseScout.DTOs;
-using HouseScout.Model;
 
 namespace HouseScout.Clients
 {

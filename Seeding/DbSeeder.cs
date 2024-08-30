@@ -1,6 +1,5 @@
 using Bogus;
 using HouseScout.Model;
-using Microsoft.EntityFrameworkCore;
 
 namespace HouseScout.Seeding;
 

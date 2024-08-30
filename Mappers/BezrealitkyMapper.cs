@@ -1,4 +1,3 @@
-using HouseScout.Clients;
 using HouseScout.DTOs;
 using HouseScout.Model;
 
