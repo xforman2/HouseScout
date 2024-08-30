@@ -1,24 +1,35 @@
 using System.Text.RegularExpressions;
-using HouseScout.Clients;
 using HouseScout.DTOs;
 using HouseScout.Model;
 
 namespace HouseScout.Mappers;
 
-public class SrealityMapper
+public class SrealityMapper : IMapper
 {
-    public List<Estate> MapResponseToModel(SrealityResponseDTO responseDto)
+    private const string URL_PREFIX = "https://www.sreality.cz/detail/pronajem/byt/";
+
+    public List<Estate> MapResponseToModel(object response)
     {
+        SrealityResponseDTO responseDto = (SrealityResponseDTO)response;
         var estatesFromResponse = responseDto.Embedded.Estates;
 
         return estatesFromResponse.Select(MapSingleToModel).ToList();
-
     }
+
     private Estate MapSingleToModel(SrealityEstate srealityEstate)
     {
-        return new Estate(ApiType.SREALITY, srealityEstate.Id, srealityEstate.Locality, srealityEstate.Price, CreateURL(srealityEstate), CreateSurface(srealityEstate), EstateType.APARTMENT, OfferType.RENT);
-
+        return new Estate(
+            ApiType.SREALITY,
+            srealityEstate.Id,
+            srealityEstate.Locality,
+            srealityEstate.Price,
+            CreateURL(srealityEstate),
+            CreateSurface(srealityEstate),
+            EstateType.APARTMENT,
+            OfferType.RENT
+        );
     }
+
     /// <summary>
     /// method exists because sreality puts type of home/flat into url
     /// </summary>
@@ -32,7 +43,7 @@ public class SrealityMapper
         Match match = regex.Match(input);
 
         if (match.Success)
-        {   
+        {
             // case for num+num
             if (match.Groups[1].Success && match.Groups[2].Success)
             {
@@ -67,15 +78,14 @@ public class SrealityMapper
 
     private string CreateURL(SrealityEstate srealityEstate)
     {
-        
-        return $"https://www.sreality.cz/detail/pronajem/byt/{GetCategory(srealityEstate.Name)}/{srealityEstate.Seo.Locality}/{srealityEstate.Id}";
+        return $"{URL_PREFIX}{GetCategory(srealityEstate.Name)}/{srealityEstate.Seo.Locality}/{srealityEstate.Id}";
     }
 
     private int CreateSurface(SrealityEstate srealityEstate)
     {
         string pattern = @"(\d+)\s?m²";
         Match match = Regex.Match(srealityEstate.Name, pattern);
-        
+
         if (match.Success)
         {
             string capturedNumber = match.Groups[1].Value;

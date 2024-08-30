@@ -19,8 +19,6 @@ namespace HouseScout.Modules
         {
             _filter = filter;
         }
-        
-
         public class EstateModal : IModal
         {
             public string Title => "Estate Details";

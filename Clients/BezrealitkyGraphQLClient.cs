@@ -1,25 +1,15 @@
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
-using HouseScout.Model;
-using System;
-using System.Threading.Tasks;
 using HouseScout.DTOs;
 
 namespace HouseScout.Clients
 {
-    public class BezrealitkyGraphQLClient
+    public class BezrealitkyGraphQLClient : IClient
     {
-        private readonly GraphQLHttpClient _client;
-
-        public BezrealitkyGraphQLClient()
-        {
-            _client = new GraphQLHttpClient("https://api.bezrealitky.cz/graphql/", new NewtonsoftJsonSerializer());
-        }
-
-        public async Task<BezrealitkyResponseDTO> GetAdvertsAsync()
-        {
-            var query = @"
+        private const string BEZREALITKY_ENDPOINT = "https://api.bezrealitky.cz/graphql/";
+        private const string QUERY =
+            @"
             query ListAdverts {
                 listAdverts(
                     offerType: PRONAJEM
@@ -42,11 +32,16 @@ namespace HouseScout.Clients
                     }
                 }
             }";
+        private readonly GraphQLHttpClient _client;
 
-            var request = new GraphQLRequest
-            {
-                Query = query
-            };
+        public BezrealitkyGraphQLClient()
+        {
+            _client = new GraphQLHttpClient(BEZREALITKY_ENDPOINT, new NewtonsoftJsonSerializer());
+        }
+
+        public async Task<object> FetchDataAsync()
+        {
+            var request = new GraphQLRequest { Query = QUERY };
 
             var response = await _client.SendQueryAsync<BezrealitkyResponseDTO>(request);
 
@@ -56,9 +51,6 @@ namespace HouseScout.Clients
                 {
                     Console.WriteLine($"Error: {error.Message}");
                 }
-
-                // TODO throw exception
-                return null;
             }
 
             return response.Data;
