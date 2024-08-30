@@ -7,6 +7,7 @@ namespace HouseScout.Mappers;
 
 public class SrealityMapper : IMapper
 {
+    private const string URL_PREFIX = "https://www.sreality.cz/detail/pronajem/byt/";
     public List<Estate> MapResponseToModel(object response)
     {
         SrealityResponseDTO responseDto = (SrealityResponseDTO)response;
@@ -69,7 +70,7 @@ public class SrealityMapper : IMapper
     private string CreateURL(SrealityEstate srealityEstate)
     {
         
-        return $"https://www.sreality.cz/detail/pronajem/byt/{GetCategory(srealityEstate.Name)}/{srealityEstate.Seo.Locality}/{srealityEstate.Id}";
+        return $"{URL_PREFIX}{GetCategory(srealityEstate.Name)}/{srealityEstate.Seo.Locality}/{srealityEstate.Id}";
     }
 
     private int CreateSurface(SrealityEstate srealityEstate)

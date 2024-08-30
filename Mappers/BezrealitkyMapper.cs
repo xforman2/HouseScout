@@ -6,6 +6,7 @@ namespace HouseScout.Mappers;
 
 public class BezrealitkyMapper : IMapper
 {
+    private const string URL_PREFIX = "https://www.bezrealitky.cz/nemovitosti-byty-domy/";
     public List<Estate> MapResponseToModel(object response)
     {
         BezrealitkyResponseDTO responseDto = (BezrealitkyResponseDTO) response;
@@ -23,6 +24,6 @@ public class BezrealitkyMapper : IMapper
 
     private string CreateURL(string uncompleteUri)
     {
-        return $"https://www.bezrealitky.cz/nemovitosti-byty-domy/{uncompleteUri}";
+        return $"{URL_PREFIX}{uncompleteUri}";
     }
 }
