@@ -1,7 +1,7 @@
 namespace HouseScout.DTOs;
 
 public class BezrealitkyResponseDTO
-{ 
+{
     public ListAdverts ListAdverts { get; set; }
 }
 

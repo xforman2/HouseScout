@@ -1,11 +1,13 @@
 using Newtonsoft.Json;
 
 namespace HouseScout.DTOs;
+
 public class SrealityResponseDTO
 {
     [JsonProperty("_embedded")]
     public Embedded Embedded { get; set; }
 }
+
 public class Embedded
 {
     [JsonProperty("estates")]
@@ -19,13 +21,15 @@ public class SrealityEstate
 
     [JsonProperty("price")]
     public decimal Price { get; set; }
+
     [JsonProperty("name")]
     public string Name { get; set; }
+
     [JsonProperty("locality")]
     public string Locality { get; set; }
+
     [JsonProperty("seo")]
     public Seo Seo { get; set; }
-        
 }
 
 public class Seo

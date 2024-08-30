@@ -7,7 +7,7 @@ namespace HouseScout.Seeding;
 public class DbSeeder
 {
     private readonly HouseScoutContext _context;
-    
+
     public DbSeeder(HouseScoutContext context)
     {
         _context = context;
@@ -27,12 +27,10 @@ public class DbSeeder
                 .RuleFor(e => e.EstateType, f => f.PickRandom<EstateType>())
                 .RuleFor(e => e.OfferType, f => f.PickRandom<OfferType>());
 
-            var estates = estateFaker.Generate(500); 
+            var estates = estateFaker.Generate(500);
 
             _context.Estates.AddRange(estates);
-            _context.SaveChanges(); 
+            _context.SaveChanges();
         }
-        
-        
     }
 }
