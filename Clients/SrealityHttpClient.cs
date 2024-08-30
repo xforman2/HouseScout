@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 
 namespace HouseScout.Clients
 {
-    public class SrealityHttpClient
+    public class SrealityHttpClient : IClient
     {
-        public async Task<SrealityResponseDTO> GetSrealityData()
+        public async Task<object> FetchDataAsync()
         {
             string url = "https://www.sreality.cz/api/cs/v2/estates?category_main_cb=1&category_type_cb=2&locality_district_id=72&locality_region_id=14&per_page=999";
             

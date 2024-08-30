@@ -5,10 +5,11 @@ using HouseScout.Model;
 
 namespace HouseScout.Mappers;
 
-public class SrealityMapper
+public class SrealityMapper : IMapper
 {
-    public List<Estate> MapResponseToModel(SrealityResponseDTO responseDto)
+    public List<Estate> MapResponseToModel(object response)
     {
+        SrealityResponseDTO responseDto = (SrealityResponseDTO)response;
         var estatesFromResponse = responseDto.Embedded.Estates;
 
         return estatesFromResponse.Select(MapSingleToModel).ToList();

@@ -8,6 +8,7 @@ using System.Reflection;
 using HouseScout.Clients;
 using HouseScout.Mappers;
 using HouseScout.Model;
+using HouseScout.Services;
 using Microsoft.EntityFrameworkCore;
 
 class Program
@@ -52,24 +53,10 @@ class Program
         {
             //TODO this is just temp, delete later
             var services = scope.ServiceProvider;
-            var dbContext = services.GetRequiredService<HouseScoutContext>();
 
-            var bezrealitkyClient = services.GetRequiredService<BezrealitkyGraphQLClient>();
-            var srealityClient = services.GetRequiredService<SrealityHttpClient>();
+            var dataProcessingService = services.GetRequiredService<DataProcessingService>();
+            await dataProcessingService.ProcessData();
 
-            var bezrealitkyMapper = services.GetRequiredService<BezrealitkyMapper>();
-            var srealityMapper = services.GetRequiredService<SrealityMapper>();
-
-            var bezrealitkyResponse = await bezrealitkyClient.GetAdvertsAsync();
-            var srealityResponse = await srealityClient.GetSrealityData();
-
-            var bezrealitkyMappedData = bezrealitkyMapper.MapResponseToModel(bezrealitkyResponse);
-            var srealityMappedData = srealityMapper.MapResponseToModel(srealityResponse);
-
-            await dbContext.Estates.AddRangeAsync(bezrealitkyMappedData);
-            await dbContext.Estates.AddRangeAsync(srealityMappedData);
-
-            await dbContext.SaveChangesAsync();
         }
 
         await Task.Delay(-1); // Keep the bot running
@@ -92,7 +79,21 @@ class Program
                         .AddSingleton<BezrealitkyGraphQLClient>()
                         .AddSingleton<SrealityHttpClient>()
                         .AddSingleton<BezrealitkyMapper>()
-                        .AddSingleton<SrealityMapper>();
+                        .AddSingleton<SrealityMapper>()
+                        .AddSingleton<Dictionary<IClient, IMapper>>(provider =>
+                {
+                    var srealityClient = provider.GetRequiredService<SrealityHttpClient>();
+                    var bezrealitkyClient = provider.GetRequiredService<BezrealitkyGraphQLClient>();
+                    var srealityMapper = provider.GetRequiredService<SrealityMapper>();
+                    var bezrealitkyMapper = provider.GetRequiredService<BezrealitkyMapper>();
+
+                    return new Dictionary<IClient, IMapper>
+                    {
+                        { srealityClient, srealityMapper },
+                        { bezrealitkyClient, bezrealitkyMapper }
+                    };
+                }).AddScoped<DataProcessingService>();
+                
             });
 
     private static Task LogAsync(LogMessage log)
