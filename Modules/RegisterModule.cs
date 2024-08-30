@@ -15,14 +15,16 @@ namespace HouseScout.Modules
         private static int MaxSurface { get; set; }
         private static OfferType OfferType { get; set; }
         private static EstateType EstateType { get; set; }
+
         public RegisterModule(DataFilter filter)
         {
             _filter = filter;
         }
+
         public class EstateModal : IModal
         {
             public string Title => "Estate Details";
-            
+
             [InputLabel("Min Price")]
             [ModalTextInput("min_price", placeholder: "0", maxLength: 20)]
             public string MinPriceInput { get; set; }
@@ -39,13 +41,13 @@ namespace HouseScout.Modules
             [ModalTextInput("max_surface", placeholder: "999", maxLength: 20)]
             public string MaxSurfaceInput { get; set; }
         }
-        
+
         [SlashCommand("register", "Register your preferences")]
         public async Task Command()
         {
             await Context.Interaction.RespondWithModalAsync<EstateModal>("registerModal");
         }
-    
+
         [ModalInteraction("registerModal")]
         public async Task HandleEstateDetailsModalSubmit(EstateModal modal)
         {
@@ -53,8 +55,6 @@ namespace HouseScout.Modules
             MaxPrice = int.Parse(modal.MaxPriceInput);
             MinSurface = int.Parse(modal.MinSurfaceInput);
             MaxSurface = int.Parse(modal.MaxSurfaceInput);
-            
-            
 
             var estateSelectMenu = new SelectMenuBuilder()
                 .WithCustomId("estateType")
@@ -62,15 +62,13 @@ namespace HouseScout.Modules
                 .AddOption("House", "house")
                 .AddOption("Apartment", "app");
 
-            var builder = new ComponentBuilder()
-                .WithSelectMenu(estateSelectMenu);
-            
+            var builder = new ComponentBuilder().WithSelectMenu(estateSelectMenu);
+
             Console.WriteLine(MinPrice);
-            
 
             await RespondAsync("Please select a estate type:", components: builder.Build());
         }
-        
+
         [ComponentInteraction("estateType")]
         public async Task HandleEstateTypeSelect(string[] selectedValues)
         {
@@ -83,46 +81,44 @@ namespace HouseScout.Modules
                 .AddOption("Sale", "sale")
                 .AddOption("Rent", "rent");
 
-            var builder = new ComponentBuilder()
-                .WithSelectMenu(offerSelectMenu);
+            var builder = new ComponentBuilder().WithSelectMenu(offerSelectMenu);
 
             await RespondAsync("Please select a offer type:", components: builder.Build());
         }
 
-        [ComponentInteraction("offerType" )]
-            public async Task HandleOfferTypeSelect(string[] selectedValues)
+        [ComponentInteraction("offerType")]
+        public async Task HandleOfferTypeSelect(string[] selectedValues)
+        {
+            Console.WriteLine(MinPrice);
+            OfferType = selectedValues[0] == "sale" ? OfferType.SALE : OfferType.RENT;
+            var estates = _filter.SurfacePriceFilter(MinPrice, MaxPrice, MinSurface, MaxSurface);
+
+            if (!estates.Any())
             {
-                Console.WriteLine(MinPrice);
-                OfferType = selectedValues[0] == "sale" ? OfferType.SALE : OfferType.RENT;
-                var estates = _filter.SurfacePriceFilter( MinPrice, MaxPrice, MinSurface, MaxSurface );
-                
-                if (!estates.Any())
-                {
-                    await RespondAsync("No matching estates found.");
-                    return;
-                }
+                await RespondAsync("No matching estates found.");
+                return;
+            }
 
-                var messageBuilder = new StringBuilder();
-                foreach (var estate in estates)
-                {
-                    var estateInfo =  $"**Link:** {estate.Link}\n \n";
+            var messageBuilder = new StringBuilder();
+            foreach (var estate in estates)
+            {
+                var estateInfo = $"**Link:** {estate.Link}\n \n";
 
-                    if (messageBuilder.Length + estateInfo.Length > 2000)
-                    {
-                        await Context.Channel.SendMessageAsync(messageBuilder.ToString());
-                        messageBuilder.Clear();
-                    }
-
-                    messageBuilder.Append(estateInfo);
-                }
-                
-                if (messageBuilder.Length > 0)
+                if (messageBuilder.Length + estateInfo.Length > 2000)
                 {
                     await Context.Channel.SendMessageAsync(messageBuilder.ToString());
+                    messageBuilder.Clear();
                 }
 
-                await RespondAsync();
+                messageBuilder.Append(estateInfo);
             }
-        
+
+            if (messageBuilder.Length > 0)
+            {
+                await Context.Channel.SendMessageAsync(messageBuilder.ToString());
+            }
+
+            await RespondAsync();
+        }
     }
 }

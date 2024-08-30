@@ -5,18 +5,26 @@ namespace HouseScout.Filters;
 public class DataFilter
 {
     private HouseScoutContext _context;
-    
+
     public DataFilter(HouseScoutContext context)
     {
         _context = context;
     }
 
-    public List<Estate> SurfacePriceFilter(int priceMin, int priceMax, int surfaceMin, int surfaceMax)
+    public List<Estate> SurfacePriceFilter(
+        int priceMin,
+        int priceMax,
+        int surfaceMin,
+        int surfaceMax
+    )
     {
-        return _context.Estates.Where(e => e.Price >= priceMin && e.Price <= priceMax && 
-                                           e.Surface >= surfaceMin && e.Surface <= surfaceMax).ToList();
+        return _context
+            .Estates.Where(e =>
+                e.Price >= priceMin
+                && e.Price <= priceMax
+                && e.Surface >= surfaceMin
+                && e.Surface <= surfaceMax
+            )
+            .ToList();
     }
-
-    
-    
 }

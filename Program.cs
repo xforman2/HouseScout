@@ -1,10 +1,7 @@
 using System.Reflection;
 using Discord;
-using Discord.Interactions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using HouseScout.Clients;
 using HouseScout.Filters;
@@ -13,6 +10,9 @@ using HouseScout.Model;
 using HouseScout.Seeding;
 using HouseScout.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 class Program
 {
@@ -34,8 +34,7 @@ class Program
         _interactionService.Log += LogAsync;
         _commandService.Log += LogAsync;
 
-
-        // Register the interaction handler                     
+        // Register the interaction handler
         _client.InteractionCreated += async interaction =>
         {
             var context = new SocketInteractionContext(_client, interaction);
@@ -55,9 +54,6 @@ class Program
             await _interactionService.RegisterCommandsGloballyAsync();
         };
 
-
-
-
         // Main scope of application
         using (var scope = host.Services.CreateScope())
         {
@@ -73,18 +69,31 @@ class Program
 
     private static IHostBuilder CreateHostBuilder() =>
         Host.CreateDefaultBuilder()
-            .ConfigureServices((context, services) =>
+            .ConfigureServices(
+                (context, services) =>
                 {
                     var configuration = context.Configuration;
 
-                    services.AddSingleton(configuration)
-                        .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
-                        {
-                            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
-                        }))
-                        .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+                    services
+                        .AddSingleton(configuration)
+                        .AddSingleton(
+                            new DiscordSocketClient(
+                                new DiscordSocketConfig
+                                {
+                                    GatewayIntents =
+                                        GatewayIntents.AllUnprivileged
+                                        | GatewayIntents.MessageContent,
+                                }
+                            )
+                        )
+                        .AddSingleton(x => new InteractionService(
+                            x.GetRequiredService<DiscordSocketClient>()
+                        ))
                         .AddDbContext<HouseScoutContext>(options =>
-                            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")))
+                            options.UseNpgsql(
+                                configuration.GetConnectionString("DefaultConnection")
+                            )
+                        )
                         .AddSingleton<BezrealitkyGraphQLClient>()
                         .AddSingleton<SrealityHttpClient>()
                         .AddSingleton<BezrealitkyMapper>()
@@ -111,16 +120,17 @@ class Program
                 }
             );
 
-
     private static Task LogAsync(LogMessage message)
     {
         if (message.Exception is CommandException cmdException)
         {
-            Console.WriteLine($"[Command/{message.Severity}] {cmdException.Command.Aliases.First()}"
-                              + $" failed to execute in {cmdException.Context.Channel}.");
+            Console.WriteLine(
+                $"[Command/{message.Severity}] {cmdException.Command.Aliases.First()}"
+                    + $" failed to execute in {cmdException.Context.Channel}."
+            );
             Console.WriteLine(cmdException);
         }
-        else 
+        else
             Console.WriteLine($"[General/{message.Severity}] {message}");
 
         return Task.CompletedTask;
