@@ -1,46 +1,125 @@
+using System.Text;
+using Discord;
 using Discord.Interactions;
+using HouseScout.Filters;
+using HouseScout.Model;
 
-namespace HouseScout.Modules;
-
-public class RegisterModule : InteractionModuleBase<SocketInteractionContext>
+namespace HouseScout.Modules
 {
-    // Registers a command that will respond with a modal.
-    [SlashCommand("register", "Register your preferences")]
-    public async Task Command() =>
-        await Context.Interaction.RespondWithModalAsync<EstateModal>("register_modal");
-
-    // Defines the modal that will be sent.
-    public class EstateModal : IModal
+    public class RegisterModule : InteractionModuleBase<SocketInteractionContext>
     {
-        public string Title => "Estate Details";
+        private readonly DataFilter _filter;
+        private static int MinPrice { get; set; }
+        private static int MaxPrice { get; set; }
+        private static int MinSurface { get; set; }
+        private static int MaxSurface { get; set; }
+        private static OfferType OfferType { get; set; }
+        private static EstateType EstateType { get; set; }
 
-        [InputLabel("Price")]
-        [ModalTextInput("estate_price", placeholder: "500000", maxLength: 20)]
-        public double Price { get; set; }
+        public RegisterModule(DataFilter filter)
+        {
+            _filter = filter;
+        }
 
-        [InputLabel("Surface Area ( m ^ 2 )")]
-        [ModalTextInput("estate_surface", placeholder: "60", maxLength: 20)]
-        public int Surface { get; set; }
+        public class EstateModal : IModal
+        {
+            public string Title => "Estate Details";
 
-        [InputLabel("Estate Type (1=House, 2=Apartment, etc.)")]
-        [ModalTextInput("estate_type", placeholder: "1", maxLength: 2)]
-        public int EstateType { get; set; }
+            [InputLabel("Min Price")]
+            [ModalTextInput("min_price", placeholder: "0", maxLength: 20, initValue: "0")]
+            public string MinPriceInput { get; set; }
 
-        [InputLabel("Offer Type (1=Sale, 2=Rent, etc.)")]
-        [ModalTextInput("offer_type", placeholder: "1", maxLength: 2)]
-        public int OfferType { get; set; }
-    }
+            [InputLabel("Max Price")]
+            [ModalTextInput(
+                "max_price",
+                placeholder: "99999999",
+                maxLength: 20,
+                initValue: "20000"
+            )]
+            public string MaxPriceInput { get; set; }
 
-    [ModalInteraction("register_modal")]
-    public async Task ModalResponse(EstateModal modal)
-    {
-        string message =
-            $"New estate listing:\n"
-            + $"- Price: ${modal.Price}\n"
-            + $"- Surface Area: ${modal.Surface}\n"
-            + $"- Estate Type: {modal.EstateType}\n"
-            + $"- Offer Type: {modal.OfferType}";
+            [InputLabel("Min Surface Area (m ^ 2)")]
+            [ModalTextInput("min_surface", placeholder: "0", maxLength: 20, initValue: "0")]
+            public string MinSurfaceInput { get; set; }
 
-        await RespondAsync(message, ephemeral: true);
+            [InputLabel("Max Surface Area (m ^ 2)")]
+            [ModalTextInput("max_surface", placeholder: "999", maxLength: 20, initValue: "60")]
+            public string MaxSurfaceInput { get; set; }
+        }
+
+        [SlashCommand("register", "Register your preferences")]
+        public async Task Command()
+        {
+            await Context.Interaction.RespondWithModalAsync<EstateModal>("registerModal");
+        }
+
+        [ModalInteraction("registerModal")]
+        public async Task HandleEstateDetailsModalSubmit(EstateModal modal)
+        {
+            MinPrice = int.Parse(modal.MinPriceInput);
+            MaxPrice = int.Parse(modal.MaxPriceInput);
+            MinSurface = int.Parse(modal.MinSurfaceInput);
+            MaxSurface = int.Parse(modal.MaxSurfaceInput);
+
+            var estateSelectMenu = new SelectMenuBuilder()
+                .WithCustomId("estateType")
+                .WithPlaceholder("Select estate type")
+                .AddOption("House", "house")
+                .AddOption("Apartment", "app");
+
+            var builder = new ComponentBuilder().WithSelectMenu(estateSelectMenu);
+
+            await RespondAsync("Please select a estate type:", components: builder.Build());
+        }
+
+        [ComponentInteraction("estateType")]
+        public async Task HandleEstateTypeSelect(string[] selectedValues)
+        {
+            EstateType = selectedValues[0] == "house" ? EstateType.HOUSE : EstateType.APARTMENT;
+
+            var offerSelectMenu = new SelectMenuBuilder()
+                .WithCustomId("offerType")
+                .WithPlaceholder("Select offer type")
+                .AddOption("Sale", "sale")
+                .AddOption("Rent", "rent");
+
+            var builder = new ComponentBuilder().WithSelectMenu(offerSelectMenu);
+
+            await RespondAsync("Please select a offer type:", components: builder.Build());
+        }
+
+        [ComponentInteraction("offerType")]
+        public async Task HandleOfferTypeSelect(string[] selectedValues)
+        {
+            OfferType = selectedValues[0] == "sale" ? OfferType.SALE : OfferType.RENT;
+            var estates = _filter.SurfacePriceFilter(MinPrice, MaxPrice, MinSurface, MaxSurface);
+
+            if (!estates.Any())
+            {
+                await RespondAsync("No matching estates found.");
+                return;
+            }
+
+            var messageBuilder = new StringBuilder();
+            foreach (var estate in estates)
+            {
+                var estateInfo = $"**Link:** {estate.Link}\n \n";
+
+                if (messageBuilder.Length + estateInfo.Length > 2000)
+                {
+                    await Context.Channel.SendMessageAsync(messageBuilder.ToString());
+                    messageBuilder.Clear();
+                }
+
+                messageBuilder.Append(estateInfo);
+            }
+
+            if (messageBuilder.Length > 0)
+            {
+                await Context.Channel.SendMessageAsync(messageBuilder.ToString());
+            }
+
+            await RespondAsync();
+        }
     }
 }

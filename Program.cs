@@ -1,10 +1,13 @@
 using System.Reflection;
 using Discord;
+using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using HouseScout.Clients;
+using HouseScout.Filters;
 using HouseScout.Mappers;
 using HouseScout.Model;
+using HouseScout.Seeding;
 using HouseScout.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +18,7 @@ class Program
 {
     private static DiscordSocketClient _client;
     private static InteractionService _interactionService;
+    private static CommandService _commandService;
 
     static async Task Main(string[] args)
     {
@@ -24,9 +28,11 @@ class Program
         // Configure Discord client and interaction service
         _client = host.Services.GetRequiredService<DiscordSocketClient>();
         _interactionService = host.Services.GetRequiredService<InteractionService>();
+        _commandService = host.Services.GetRequiredService<CommandService>();
 
         _client.Log += LogAsync;
         _interactionService.Log += LogAsync;
+        _commandService.Log += LogAsync;
 
         // Register the interaction handler
         _client.InteractionCreated += async interaction =>
@@ -92,6 +98,9 @@ class Program
                         .AddSingleton<SrealityHttpClient>()
                         .AddSingleton<BezrealitkyMapper>()
                         .AddSingleton<SrealityMapper>()
+                        .AddScoped<DbSeeder>()
+                        .AddSingleton<CommandService>()
+                        .AddScoped<DataFilter>()
                         .AddSingleton<Dictionary<IClient, IMapper>>(provider =>
                         {
                             var srealityClient = provider.GetRequiredService<SrealityHttpClient>();
@@ -111,9 +120,19 @@ class Program
                 }
             );
 
-    private static Task LogAsync(LogMessage log)
+    private static Task LogAsync(LogMessage message)
     {
-        Console.WriteLine(log.ToString());
+        if (message.Exception is CommandException cmdException)
+        {
+            Console.WriteLine(
+                $"[Command/{message.Severity}] {cmdException.Command.Aliases.First()}"
+                    + $" failed to execute in {cmdException.Context.Channel}."
+            );
+            Console.WriteLine(cmdException);
+        }
+        else
+            Console.WriteLine($"[General/{message.Severity}] {message}");
+
         return Task.CompletedTask;
     }
 }
