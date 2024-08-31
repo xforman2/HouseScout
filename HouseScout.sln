@@ -1,6 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseScout", "HouseScout.csproj", "{ABBCADE6-F502-4678-BB36-CBF793FB8620}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordBot", "DiscordBot\DiscordBot.csproj", "{A01F6848-737C-4E3C-B3F6-B244085DFAAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{F05C8015-A505-4C28-8DEF-248769E4B1D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedDependencies", "SharedDependencies\SharedDependencies.csproj", "{78208FE4-D5BD-4D24-AC66-4A755E44EF87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +12,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ABBCADE6-F502-4678-BB36-CBF793FB8620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABBCADE6-F502-4678-BB36-CBF793FB8620}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABBCADE6-F502-4678-BB36-CBF793FB8620}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABBCADE6-F502-4678-BB36-CBF793FB8620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A01F6848-737C-4E3C-B3F6-B244085DFAAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A01F6848-737C-4E3C-B3F6-B244085DFAAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A01F6848-737C-4E3C-B3F6-B244085DFAAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A01F6848-737C-4E3C-B3F6-B244085DFAAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F05C8015-A505-4C28-8DEF-248769E4B1D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F05C8015-A505-4C28-8DEF-248769E4B1D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F05C8015-A505-4C28-8DEF-248769E4B1D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F05C8015-A505-4C28-8DEF-248769E4B1D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78208FE4-D5BD-4D24-AC66-4A755E44EF87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78208FE4-D5BD-4D24-AC66-4A755E44EF87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78208FE4-D5BD-4D24-AC66-4A755E44EF87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78208FE4-D5BD-4D24-AC66-4A755E44EF87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

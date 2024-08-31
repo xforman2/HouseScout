@@ -1,8 +1,9 @@
-using HouseScout.Clients;
-using HouseScout.Mappers;
+using Backend.Clients;
+using Backend.Mappers;
 using HouseScout.Model;
+using SharedDependencies.Model;
 
-namespace HouseScout.Services;
+namespace Backend.Services;
 
 public class DataProcessingService
 {

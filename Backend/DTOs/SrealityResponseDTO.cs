@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace HouseScout.DTOs;
+namespace Backend.DTOs;
 
 public class SrealityResponseDTO
 {

@@ -1,4 +1,4 @@
-namespace HouseScout.DTOs;
+namespace Backend.DTOs;
 
 public class BezrealitkyResponseDTO
 {

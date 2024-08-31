@@ -1,7 +1,8 @@
 using Bogus;
 using HouseScout.Model;
+using SharedDependencies.Model;
 
-namespace HouseScout.Seeding;
+namespace Backend.Seeding;
 
 public class DbSeeder
 {

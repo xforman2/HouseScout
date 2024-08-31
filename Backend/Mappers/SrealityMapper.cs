@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
-using HouseScout.DTOs;
+using Backend.DTOs;
 using HouseScout.Model;
 
-namespace HouseScout.Mappers;
+namespace Backend.Mappers;
 
 public class SrealityMapper : IMapper
 {

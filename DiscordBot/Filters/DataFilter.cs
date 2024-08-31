@@ -1,4 +1,5 @@
 using HouseScout.Model;
+using SharedDependencies.Model;
 
 namespace HouseScout.Filters;
 

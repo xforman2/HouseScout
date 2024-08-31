@@ -1,9 +1,9 @@
+using Backend.DTOs;
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
-using HouseScout.DTOs;
 
-namespace HouseScout.Clients
+namespace Backend.Clients
 {
     public class BezrealitkyGraphQLClient : IClient
     {

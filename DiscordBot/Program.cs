@@ -1,18 +1,15 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using HouseScout.Clients;
 using HouseScout.Filters;
-using HouseScout.Mappers;
 using HouseScout.Model;
-using HouseScout.Seeding;
-using HouseScout.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SharedDependencies.Model;
 
 class Program
 {
@@ -54,16 +51,6 @@ class Program
             await _interactionService.RegisterCommandsGloballyAsync();
         };
 
-        // Main scope of application
-        using (var scope = host.Services.CreateScope())
-        {
-            //TODO this is just temp, delete later
-            var services = scope.ServiceProvider;
-
-            var dataProcessingService = services.GetRequiredService<DataProcessingService>();
-            await dataProcessingService.ProcessData();
-        }
-
         await Task.Delay(-1); // Keep the bot running
     }
 
@@ -94,29 +81,8 @@ class Program
                                 configuration.GetConnectionString("DefaultConnection")
                             )
                         )
-                        .AddSingleton<BezrealitkyGraphQLClient>()
-                        .AddSingleton<SrealityHttpClient>()
-                        .AddSingleton<BezrealitkyMapper>()
-                        .AddSingleton<SrealityMapper>()
-                        .AddScoped<DbSeeder>()
                         .AddSingleton<CommandService>()
-                        .AddScoped<DataFilter>()
-                        .AddSingleton<Dictionary<IClient, IMapper>>(provider =>
-                        {
-                            var srealityClient = provider.GetRequiredService<SrealityHttpClient>();
-                            var bezrealitkyClient =
-                                provider.GetRequiredService<BezrealitkyGraphQLClient>();
-                            var srealityMapper = provider.GetRequiredService<SrealityMapper>();
-                            var bezrealitkyMapper =
-                                provider.GetRequiredService<BezrealitkyMapper>();
-
-                            return new Dictionary<IClient, IMapper>
-                            {
-                                { srealityClient, srealityMapper },
-                                { bezrealitkyClient, bezrealitkyMapper },
-                            };
-                        })
-                        .AddScoped<DataProcessingService>();
+                        .AddScoped<DataFilter>();
                 }
             );
 

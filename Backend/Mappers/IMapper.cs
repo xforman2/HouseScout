@@ -1,6 +1,6 @@
 using HouseScout.Model;
 
-namespace HouseScout.Mappers;
+namespace Backend.Mappers;
 
 public interface IMapper
 {

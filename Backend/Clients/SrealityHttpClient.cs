@@ -1,7 +1,7 @@
-using HouseScout.DTOs;
+using Backend.DTOs;
 using Newtonsoft.Json;
 
-namespace HouseScout.Clients
+namespace Backend.Clients
 {
     public class SrealityHttpClient : IClient
     {

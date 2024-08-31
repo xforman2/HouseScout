@@ -1,4 +1,4 @@
-namespace HouseScout.Clients;
+namespace Backend.Clients;
 
 public interface IClient
 {
