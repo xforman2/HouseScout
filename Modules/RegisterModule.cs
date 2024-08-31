@@ -26,19 +26,24 @@ namespace HouseScout.Modules
             public string Title => "Estate Details";
 
             [InputLabel("Min Price")]
-            [ModalTextInput("min_price", placeholder: "0", maxLength: 20)]
+            [ModalTextInput("min_price", placeholder: "0", maxLength: 20, initValue: "0")]
             public string MinPriceInput { get; set; }
 
             [InputLabel("Max Price")]
-            [ModalTextInput("max_price", placeholder: "99999999", maxLength: 20)]
+            [ModalTextInput(
+                "max_price",
+                placeholder: "99999999",
+                maxLength: 20,
+                initValue: "20000"
+            )]
             public string MaxPriceInput { get; set; }
 
             [InputLabel("Min Surface Area (m ^ 2)")]
-            [ModalTextInput("min_surface", placeholder: "0", maxLength: 20)]
+            [ModalTextInput("min_surface", placeholder: "0", maxLength: 20, initValue: "0")]
             public string MinSurfaceInput { get; set; }
 
             [InputLabel("Max Surface Area (m ^ 2)")]
-            [ModalTextInput("max_surface", placeholder: "999", maxLength: 20)]
+            [ModalTextInput("max_surface", placeholder: "999", maxLength: 20, initValue: "60")]
             public string MaxSurfaceInput { get; set; }
         }
 
@@ -64,15 +69,12 @@ namespace HouseScout.Modules
 
             var builder = new ComponentBuilder().WithSelectMenu(estateSelectMenu);
 
-            Console.WriteLine(MinPrice);
-
             await RespondAsync("Please select a estate type:", components: builder.Build());
         }
 
         [ComponentInteraction("estateType")]
         public async Task HandleEstateTypeSelect(string[] selectedValues)
         {
-            Console.WriteLine(MinPrice);
             EstateType = selectedValues[0] == "house" ? EstateType.HOUSE : EstateType.APARTMENT;
 
             var offerSelectMenu = new SelectMenuBuilder()
@@ -89,7 +91,6 @@ namespace HouseScout.Modules
         [ComponentInteraction("offerType")]
         public async Task HandleOfferTypeSelect(string[] selectedValues)
         {
-            Console.WriteLine(MinPrice);
             OfferType = selectedValues[0] == "sale" ? OfferType.SALE : OfferType.RENT;
             var estates = _filter.SurfacePriceFilter(MinPrice, MaxPrice, MinSurface, MaxSurface);
 
