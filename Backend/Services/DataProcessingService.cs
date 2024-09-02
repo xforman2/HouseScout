@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Backend.Clients;
 using Backend.Mappers;
 using HouseScout.Model;
@@ -21,15 +22,42 @@ public class DataProcessingService
 
     public async Task ProcessData()
     {
+        var existingEstates = _context.Estates.ToList();
+        
+        var fetchedEstates = new List<Estate>();
+        
         foreach (var kvp in _clientsAndMappers)
         {
             IClient client = kvp.Key;
             IMapper mapper = kvp.Value;
+            
 
             var data = await client.FetchDataAsync();
-            var mappedData = mapper.MapResponseToModel(data);
-            _context.Estates.AddRange(mappedData);
-            await _context.SaveChangesAsync();
+            fetchedEstates.AddRange(mapper.MapResponseToModel(data));
         }
+        
+        var fetchedEstatesSet = new HashSet<string>(fetchedEstates.Select(fe => fe.ApiId));
+        var existingEstatesSet = new HashSet<string>(existingEstates.Select(fe => fe.ApiId));
+        
+        
+        var estatesToAdd = fetchedEstates
+            .Where(fe => !existingEstatesSet.Contains(fe.ApiId))
+            .ToList();
+        
+        var estatesToRemove = existingEstates
+            .Where(ee => !fetchedEstatesSet.Contains(ee.ApiId))
+            .ToList();
+        
+        if (estatesToAdd.Any())
+        {
+            await _context.Estates.AddRangeAsync(estatesToAdd);
+        }
+        
+        if (estatesToRemove.Any())
+        {
+            _context.Estates.RemoveRange(estatesToRemove);
+        }
+        await _context.SaveChangesAsync();
     }
+    
 }
