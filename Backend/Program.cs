@@ -18,7 +18,6 @@ class Program
         // Main scope of application
         using (var scope = host.Services.CreateScope())
         {
-            //TODO this is just temp, delete later
             var services = scope.ServiceProvider;
 
             var dataProcessingService = services.GetRequiredService<DataProcessingService>();
