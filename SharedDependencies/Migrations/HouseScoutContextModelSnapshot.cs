@@ -47,6 +47,9 @@ namespace SharedDependencies.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("New")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("OfferType")
                         .HasColumnType("integer");
 
@@ -59,6 +62,37 @@ namespace SharedDependencies.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Estates");
+                });
+
+            modelBuilder.Entity("SharedDependencies.Model.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+
+                    b.Property<int>("EstateType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaxPrice")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaxSurface")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MinPrice")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MinSurface")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OfferType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace HouseScout.Model;
 
 public class Estate
@@ -11,6 +13,8 @@ public class Estate
     public double Surface { get; set; }
     public EstateType EstateType { get; set; }
     public OfferType OfferType { get; set; }
+
+    public bool New { get; set; }
 
     // for seeding to work, do not remove
     public Estate() { }
