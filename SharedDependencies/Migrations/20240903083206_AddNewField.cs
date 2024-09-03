@@ -15,15 +15,14 @@ namespace SharedDependencies.Migrations
                 table: "Estates",
                 type: "boolean",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: false
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "New",
-                table: "Estates");
+            migrationBuilder.DropColumn(name: "New", table: "Estates");
         }
     }
 }
