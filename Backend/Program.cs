@@ -19,9 +19,8 @@ class Program
         // Main scope of application
         using (var scope = host.Services.CreateScope())
         {
-            
             var services = scope.ServiceProvider;
-            
+
             var dataProcessingService = services.GetRequiredService<DataProcessingService>();
             await dataProcessingService.ProcessData();
         }

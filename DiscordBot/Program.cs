@@ -50,7 +50,7 @@ class Program
             await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), host.Services);
             await _interactionService.RegisterCommandsGloballyAsync();
         };
-        
+
         var rabbitMqService = host.Services.GetRequiredService<RabbitMQService>();
         rabbitMqService.StartListening();
         await Task.Delay(-1); // Keep the bot running

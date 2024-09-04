@@ -20,7 +20,7 @@ public class RabbitMQService : IDisposable
         var factory = new ConnectionFactory
         {
             Uri = new Uri(rabbitMqConfig["Uri"]!),
-            ClientProvidedName = rabbitMqConfig["ClientProvidedName"]
+            ClientProvidedName = rabbitMqConfig["ClientProvidedName"],
         };
 
         _connection = factory.CreateConnection();
@@ -33,14 +33,14 @@ public class RabbitMQService : IDisposable
         _channel.ExchangeDeclare(_exchangeName, ExchangeType.Direct);
         _channel.QueueDeclare(_queueName, false, false, false, null);
         _channel.QueueBind(_queueName, _exchangeName, _routingKey, null);
-        
     }
+
     public void PublishMessage(string message)
     {
         var messageBodyBytes = Encoding.UTF8.GetBytes(message);
         _channel.BasicPublish(_exchangeName, _routingKey, null, messageBodyBytes);
     }
-    
+
     public void StartListening()
     {
         var consumer = new EventingBasicConsumer(_channel);
@@ -54,7 +54,7 @@ public class RabbitMQService : IDisposable
 
         _channel.BasicConsume(_queueName, false, consumer);
     }
-    
+
     public void Dispose()
     {
         _channel?.Close();

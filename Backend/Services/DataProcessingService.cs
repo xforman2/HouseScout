@@ -14,7 +14,9 @@ public class DataProcessingService
 
     public DataProcessingService(
         Dictionary<IClient, IMapper> clientsAndMappers,
-        HouseScoutContext context, RabbitMQService rabbitMqService)
+        HouseScoutContext context,
+        RabbitMQService rabbitMqService
+    )
     {
         _clientsAndMappers = clientsAndMappers;
         _context = context;
@@ -73,7 +75,7 @@ public class DataProcessingService
             _context.Estates.RemoveRange(estatesToRemove);
         }
         await _context.SaveChangesAsync();
-        
+
         _rabbitMQService.PublishMessage("Hello, world from DataProcessingService!");
     }
 }
