@@ -1,4 +1,3 @@
-using HouseScout.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace SharedDependencies.Model;

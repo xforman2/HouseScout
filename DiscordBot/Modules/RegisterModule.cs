@@ -1,11 +1,9 @@
-using System.Text;
 using Discord;
 using Discord.Interactions;
-using HouseScout.Filters;
-using HouseScout.Model;
+using DiscordBot.Filters;
 using SharedDependencies.Model;
 
-namespace HouseScout.Modules
+namespace DiscordBot.Modules
 {
     public class RegisterModule : InteractionModuleBase<SocketInteractionContext>
     {
@@ -51,13 +49,13 @@ namespace HouseScout.Modules
             public string MaxSurfaceInput { get; set; }
         }
 
-        [SlashCommand("register", "Register your preferences")]
-        public async Task Command()
+        [SlashCommand("register", "Register your preferences to receive notifications")]
+        public async Task Register()
         {
             var user = _context.Users.FirstOrDefault(u => (ulong)u.UserId == Context.User.Id);
             if (user is null)
             {
-                await Context.Interaction.RespondWithModalAsync<EstateModal>("registerModal");
+                await RespondWithModalAsync<EstateModal>("registerModal");
             }
             else
             {
@@ -124,6 +122,22 @@ namespace HouseScout.Modules
                     + $"**Surface Area Range:** {MinSurface} - {MaxSurface}\n"
                     + $"**Estate Type:** {EstateType}"
             );
+        }
+
+        [SlashCommand("unregister", "Unregister your notifications")]
+        public async Task Unregister()
+        {
+            var user = _context.Users.FirstOrDefault(u => (ulong)u.UserId == Context.User.Id);
+            if (user is null)
+            {
+                await RespondAsync("User is not registered yet");
+            }
+            else
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                await RespondAsync("User unregistered");
+            }
         }
     }
 }

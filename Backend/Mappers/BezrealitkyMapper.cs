@@ -1,5 +1,5 @@
 using Backend.DTOs;
-using HouseScout.Model;
+using SharedDependencies.Model;
 
 namespace Backend.Mappers;
 
