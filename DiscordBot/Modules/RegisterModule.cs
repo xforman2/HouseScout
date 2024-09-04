@@ -3,6 +3,7 @@ using Discord;
 using Discord.Interactions;
 using HouseScout.Filters;
 using HouseScout.Model;
+using SharedDependencies.Model;
 
 namespace HouseScout.Modules
 {
@@ -16,9 +17,12 @@ namespace HouseScout.Modules
         private static OfferType OfferType { get; set; }
         private static EstateType EstateType { get; set; }
 
-        public RegisterModule(DataFilter filter)
+        private static HouseScoutContext _context;
+
+        public RegisterModule(DataFilter filter, HouseScoutContext context)
         {
             _filter = filter;
+            _context = context;
         }
 
         public class EstateModal : IModal
@@ -92,34 +96,26 @@ namespace HouseScout.Modules
         public async Task HandleOfferTypeSelect(string[] selectedValues)
         {
             OfferType = selectedValues[0] == "sale" ? OfferType.SALE : OfferType.RENT;
-            var estates = _filter.SurfacePriceFilter(MinPrice, MaxPrice, MinSurface, MaxSurface);
-
-            if (!estates.Any())
-            {
-                await RespondAsync("No matching estates found.");
-                return;
-            }
-
-            var messageBuilder = new StringBuilder();
-            foreach (var estate in estates)
-            {
-                var estateInfo = $"**Link:** {estate.Link}\n \n";
-
-                if (messageBuilder.Length + estateInfo.Length > 2000)
-                {
-                    await Context.Channel.SendMessageAsync(messageBuilder.ToString());
-                    messageBuilder.Clear();
-                }
-
-                messageBuilder.Append(estateInfo);
-            }
-
-            if (messageBuilder.Length > 0)
-            {
-                await Context.Channel.SendMessageAsync(messageBuilder.ToString());
-            }
-
-            await RespondAsync();
+            _context.Users.Add(
+                new User(
+                    //Postgres allows only this:  identity column type must be smallint, integer, or bigint
+                    (long)Context.User.Id,
+                    MinPrice,
+                    MaxPrice,
+                    MinSurface,
+                    MaxSurface,
+                    EstateType,
+                    OfferType
+                )
+            );
+            await _context.SaveChangesAsync();
+            await RespondAsync(
+                $"You have been registered with the following preferences:\n"
+                    + $"**Offer Type:** {OfferType}\n"
+                    + $"**Price Range:** {MinPrice} - {MaxPrice}\n"
+                    + $"**Surface Area Range:** {MinSurface} - {MaxSurface}\n"
+                    + $"**Estate Type:** {EstateType}"
+            );
         }
     }
 }
