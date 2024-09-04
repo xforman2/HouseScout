@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedDependencies.Model;
+using SharedDependencies.Services;
 
 class Program
 {
@@ -18,8 +19,9 @@ class Program
         // Main scope of application
         using (var scope = host.Services.CreateScope())
         {
+            
             var services = scope.ServiceProvider;
-
+            
             var dataProcessingService = services.GetRequiredService<DataProcessingService>();
             await dataProcessingService.ProcessData();
         }
@@ -59,7 +61,8 @@ class Program
                                 { bezrealitkyClient, bezrealitkyMapper },
                             };
                         })
-                        .AddScoped<DataProcessingService>();
+                        .AddScoped<DataProcessingService>()
+                        .AddSingleton<RabbitMQService>();
                 }
             );
 }

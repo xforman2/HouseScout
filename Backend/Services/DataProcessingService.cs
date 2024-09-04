@@ -2,6 +2,7 @@ using Backend.Clients;
 using Backend.Mappers;
 using HouseScout.Model;
 using SharedDependencies.Model;
+using SharedDependencies.Services;
 
 namespace Backend.Services;
 
@@ -9,14 +10,15 @@ public class DataProcessingService
 {
     private readonly Dictionary<IClient, IMapper> _clientsAndMappers;
     private readonly HouseScoutContext _context;
+    private readonly RabbitMQService _rabbitMQService;
 
     public DataProcessingService(
         Dictionary<IClient, IMapper> clientsAndMappers,
-        HouseScoutContext context
-    )
+        HouseScoutContext context, RabbitMQService rabbitMqService)
     {
         _clientsAndMappers = clientsAndMappers;
         _context = context;
+        _rabbitMQService = rabbitMqService;
     }
 
     public async Task ProcessData()
@@ -71,5 +73,7 @@ public class DataProcessingService
             _context.Estates.RemoveRange(estatesToRemove);
         }
         await _context.SaveChangesAsync();
+        
+        _rabbitMQService.PublishMessage("Hello, world from DataProcessingService!");
     }
 }
