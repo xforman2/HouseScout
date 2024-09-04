@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Backend.Clients;
 using Backend.Mappers;
 using HouseScout.Model;
@@ -22,9 +21,9 @@ public class DataProcessingService
 
     public async Task ProcessData()
     {
-        var existingEstates = _context.Estates.ToList();
+        var existingEstates = _context.Estates.ToDictionary(e => e.ApiId);
 
-        var fetchedEstates = new List<Estate>();
+        var fetchedEstatesDictionary = new Dictionary<string, Estate>();
 
         foreach (var kvp in _clientsAndMappers)
         {
@@ -32,26 +31,42 @@ public class DataProcessingService
             IMapper mapper = kvp.Value;
 
             var data = await client.FetchDataAsync();
-            fetchedEstates.AddRange(mapper.MapResponseToModel(data));
+            var fetchedEstates = mapper.MapResponseToModel(data);
+            foreach (var estate in fetchedEstates)
+            {
+                fetchedEstatesDictionary[estate.ApiId] = estate;
+            }
         }
 
-        var fetchedEstatesSet = new HashSet<string>(fetchedEstates.Select(fe => fe.ApiId));
-        var existingEstatesSet = new HashSet<string>(existingEstates.Select(fe => fe.ApiId));
+        var estatesToAdd = new List<Estate>();
+        var estatesToRemove = new List<Estate>();
 
-        var estatesToAdd = fetchedEstates
-            .Where(fe => !existingEstatesSet.Contains(fe.ApiId))
-            .ToList();
+        foreach (var estate in fetchedEstatesDictionary.Values)
+        {
+            if (!existingEstates.ContainsKey(estate.ApiId))
+            {
+                estate.New = true;
+                estatesToAdd.Add(estate);
+            }
+        }
 
-        var estatesToRemove = existingEstates
-            .Where(ee => !fetchedEstatesSet.Contains(ee.ApiId))
-            .ToList();
-
-        if (estatesToAdd.Any())
+        foreach (var estate in existingEstates.Values)
+        {
+            if (fetchedEstatesDictionary.ContainsKey(estate.ApiId))
+            {
+                estate.New = false;
+            }
+            else
+            {
+                estatesToRemove.Add(estate);
+            }
+        }
+        if (estatesToAdd.Count > 0)
         {
             await _context.Estates.AddRangeAsync(estatesToAdd);
         }
 
-        if (estatesToRemove.Any())
+        if (estatesToRemove.Count > 0)
         {
             _context.Estates.RemoveRange(estatesToRemove);
         }

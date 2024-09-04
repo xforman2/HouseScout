@@ -4,7 +4,6 @@ using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using HouseScout.Filters;
-using HouseScout.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
