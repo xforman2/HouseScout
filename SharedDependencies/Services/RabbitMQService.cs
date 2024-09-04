@@ -12,9 +12,11 @@ public class RabbitMQService : IDisposable
     private readonly string? _exchangeName;
     private readonly string? _queueName;
     private readonly string? _routingKey;
+    private readonly IMessageHandler? _messageHandler;
 
-    public RabbitMQService(IConfiguration configuration)
+    public RabbitMQService(IConfiguration configuration, IMessageHandler? messageHandler = null)
     {
+        _messageHandler = messageHandler;
         var rabbitMqConfig = configuration.GetSection("RabbitMq");
 
         var factory = new ConnectionFactory
@@ -46,13 +48,13 @@ public class RabbitMQService : IDisposable
         var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += (ch, ea) =>
         {
-            var body = ea.Body.ToArray();
-            string message = Encoding.UTF8.GetString(body);
-            Console.WriteLine(message);
+            if (_messageHandler != null)
+            {
+                _messageHandler.HandleMessage();    
+            }
+            
             _channel.BasicAck(ea.DeliveryTag, false);
         };
-
-        _channel.BasicConsume(_queueName, false, consumer);
     }
 
     public void Dispose()
