@@ -50,9 +50,9 @@ public class RabbitMQService : IDisposable
         {
             if (_messageHandler != null)
             {
-                _messageHandler.HandleMessage();    
+                _messageHandler.HandleMessage();
             }
-            
+
             _channel.BasicAck(ea.DeliveryTag, false);
         };
     }
