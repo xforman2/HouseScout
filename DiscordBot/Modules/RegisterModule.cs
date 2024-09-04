@@ -54,7 +54,15 @@ namespace HouseScout.Modules
         [SlashCommand("register", "Register your preferences")]
         public async Task Command()
         {
-            await Context.Interaction.RespondWithModalAsync<EstateModal>("registerModal");
+            var user = _context.Users.FirstOrDefault(u => (ulong)u.UserId == Context.User.Id);
+            if (user is null)
+            {
+                await Context.Interaction.RespondWithModalAsync<EstateModal>("registerModal");
+            }
+            else
+            {
+                await RespondAsync("User already registered");
+            }
         }
 
         [ModalInteraction("registerModal")]
