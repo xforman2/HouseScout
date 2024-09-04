@@ -11,8 +11,8 @@ using SharedDependencies.Model;
 namespace SharedDependencies.Migrations
 {
     [DbContext(typeof(HouseScoutContext))]
-    [Migration("20240903083206_AddNewField")]
-    partial class AddNewField
+    [Migration("20240904075711_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,11 +69,11 @@ namespace SharedDependencies.Migrations
 
             modelBuilder.Entity("SharedDependencies.Model.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
 
                     b.Property<int>("EstateType")
                         .HasColumnType("integer");
