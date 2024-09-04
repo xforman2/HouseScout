@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedDependencies.Model;
+using SharedDependencies.Services;
 
 class Program
 {
@@ -59,7 +60,8 @@ class Program
                                 { bezrealitkyClient, bezrealitkyMapper },
                             };
                         })
-                        .AddScoped<DataProcessingService>();
+                        .AddScoped<DataProcessingService>()
+                        .AddSingleton<RabbitMQService>();
                 }
             );
 }
