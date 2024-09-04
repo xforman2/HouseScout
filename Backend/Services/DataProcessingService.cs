@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Backend.Clients;
 using Backend.Mappers;
 using HouseScout.Model;
@@ -41,7 +40,7 @@ public class DataProcessingService
 
         var estatesToAdd = new List<Estate>();
         var estatesToRemove = new List<Estate>();
-        
+
         foreach (var estate in fetchedEstatesDictionary.Values)
         {
             if (!existingEstates.ContainsKey(estate.ApiId))
@@ -50,7 +49,7 @@ public class DataProcessingService
                 estatesToAdd.Add(estate);
             }
         }
-        
+
         foreach (var estate in existingEstates.Values)
         {
             if (fetchedEstatesDictionary.ContainsKey(estate.ApiId))
@@ -62,17 +61,6 @@ public class DataProcessingService
                 estatesToRemove.Add(estate);
             }
         }
-
-        foreach (var estate in estatesToAdd)
-        {
-            Console.WriteLine($"Adding {estate.Link}");
-        }
-
-        foreach (var estate in estatesToRemove)
-        {
-            Console.WriteLine($"Deleting {estate.Link}");
-        }
-
         if (estatesToAdd.Count > 0)
         {
             await _context.Estates.AddRangeAsync(estatesToAdd);
