@@ -4,7 +4,7 @@ namespace SharedDependencies.Model;
 
 public class User
 {
-    public int UserId { get; set; }
+    public long UserId { get; set; }
 
     public int MinPrice { get; set; }
 
@@ -17,4 +17,23 @@ public class User
     public EstateType EstateType { get; set; }
 
     public OfferType OfferType { get; set; }
+
+    public User(
+        long userId,
+        int minPrice,
+        int maxPrice,
+        int minSurface,
+        int maxSurface,
+        EstateType estateType,
+        OfferType offerType
+    )
+    {
+        UserId = userId;
+        MinPrice = minPrice;
+        MaxPrice = maxPrice;
+        MinSurface = minSurface;
+        MaxSurface = maxSurface;
+        EstateType = estateType;
+        OfferType = offerType;
+    }
 }
