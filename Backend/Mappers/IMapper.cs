@@ -1,4 +1,4 @@
-using HouseScout.Model;
+using SharedDependencies.Model;
 
 namespace Backend.Mappers;
 

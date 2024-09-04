@@ -1,7 +1,6 @@
-using HouseScout.Model;
 using SharedDependencies.Model;
 
-namespace HouseScout.Filters;
+namespace DiscordBot.Filters;
 
 public class DataFilter
 {

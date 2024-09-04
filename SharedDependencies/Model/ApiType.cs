@@ -1,4 +1,4 @@
-namespace HouseScout.Model;
+namespace SharedDependencies.Model;
 
 public enum ApiType
 {

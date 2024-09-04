@@ -1,5 +1,3 @@
-using HouseScout.Model;
-
 namespace SharedDependencies.Model;
 
 public class User

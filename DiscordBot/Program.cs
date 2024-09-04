@@ -3,12 +3,14 @@ using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using HouseScout.Filters;
+using DiscordBot.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedDependencies.Model;
+
+namespace DiscordBot;
 
 class Program
 {

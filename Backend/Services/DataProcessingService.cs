@@ -1,6 +1,5 @@
 using Backend.Clients;
 using Backend.Mappers;
-using HouseScout.Model;
 using SharedDependencies.Model;
 
 namespace Backend.Services;

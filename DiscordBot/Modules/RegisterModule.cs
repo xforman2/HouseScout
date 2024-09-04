@@ -1,11 +1,9 @@
-using System.Text;
 using Discord;
 using Discord.Interactions;
-using HouseScout.Filters;
-using HouseScout.Model;
+using DiscordBot.Filters;
 using SharedDependencies.Model;
 
-namespace HouseScout.Modules
+namespace DiscordBot.Modules
 {
     public class RegisterModule : InteractionModuleBase<SocketInteractionContext>
     {
@@ -125,7 +123,7 @@ namespace HouseScout.Modules
                     + $"**Estate Type:** {EstateType}"
             );
         }
-        
+
         [SlashCommand("unregister", "Unregister your notifications")]
         public async Task Unregister()
         {
@@ -141,7 +139,5 @@ namespace HouseScout.Modules
                 await RespondAsync("User unregistered");
             }
         }
-        
-        
     }
 }
