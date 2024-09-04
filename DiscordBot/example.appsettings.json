@@ -2,5 +2,12 @@
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Port=5432;Database=mydatabase;Username=myuser;Password=mypassword"
   },
+  "RabbitMq": {
+    "Uri": "amqp://guest:guest@localhost:5672",
+    "ExchangeName": "exchange",
+    "QueueName": "queue",
+    "RoutingKey": "routingKey",
+    "ClientProvidedName": "Backend Sender"
+  },
   "DiscordToken": "Your Discord Token"
 }
