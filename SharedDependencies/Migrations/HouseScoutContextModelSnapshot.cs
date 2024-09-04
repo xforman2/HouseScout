@@ -66,11 +66,11 @@ namespace SharedDependencies.Migrations
 
             modelBuilder.Entity("SharedDependencies.Model.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
 
                     b.Property<int>("EstateType")
                         .HasColumnType("integer");

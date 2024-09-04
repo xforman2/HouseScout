@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SharedDependencies.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,10 +29,34 @@ namespace SharedDependencies.Migrations
                     Surface = table.Column<double>(type: "double precision", nullable: false),
                     EstateType = table.Column<int>(type: "integer", nullable: false),
                     OfferType = table.Column<int>(type: "integer", nullable: false),
+                    New = table.Column<bool>(type: "boolean", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Estates", x => x.Id);
+                }
+            );
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table
+                        .Column<long>(type: "bigint", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
+                    MinPrice = table.Column<int>(type: "integer", nullable: false),
+                    MaxPrice = table.Column<int>(type: "integer", nullable: false),
+                    MinSurface = table.Column<int>(type: "integer", nullable: false),
+                    MaxSurface = table.Column<int>(type: "integer", nullable: false),
+                    EstateType = table.Column<int>(type: "integer", nullable: false),
+                    OfferType = table.Column<int>(type: "integer", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
                 }
             );
         }
@@ -41,6 +65,8 @@ namespace SharedDependencies.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(name: "Estates");
+
+            migrationBuilder.DropTable(name: "Users");
         }
     }
 }
