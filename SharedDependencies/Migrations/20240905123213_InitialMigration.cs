@@ -15,12 +15,8 @@ namespace SharedDependencies.Migrations
                 name: "Estates",
                 columns: table => new
                 {
-                    Id = table
-                        .Column<int>(type: "integer", nullable: false)
-                        .Annotation(
-                            "Npgsql:ValueGenerationStrategy",
-                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
-                        ),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ApiType = table.Column<int>(type: "integer", nullable: false),
                     ApiId = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
@@ -29,44 +25,41 @@ namespace SharedDependencies.Migrations
                     Surface = table.Column<double>(type: "double precision", nullable: false),
                     EstateType = table.Column<int>(type: "integer", nullable: false),
                     OfferType = table.Column<int>(type: "integer", nullable: false),
-                    New = table.Column<bool>(type: "boolean", nullable: false),
+                    IsNew = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Estates", x => x.Id);
-                }
-            );
+                });
 
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table
-                        .Column<long>(type: "bigint", nullable: false)
-                        .Annotation(
-                            "Npgsql:ValueGenerationStrategy",
-                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
-                        ),
+                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MinPrice = table.Column<int>(type: "integer", nullable: false),
                     MaxPrice = table.Column<int>(type: "integer", nullable: false),
                     MinSurface = table.Column<int>(type: "integer", nullable: false),
                     MaxSurface = table.Column<int>(type: "integer", nullable: false),
                     EstateType = table.Column<int>(type: "integer", nullable: false),
                     OfferType = table.Column<int>(type: "integer", nullable: false),
+                    IsNew = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserId);
-                }
-            );
+                });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "Estates");
+            migrationBuilder.DropTable(
+                name: "Estates");
 
-            migrationBuilder.DropTable(name: "Users");
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

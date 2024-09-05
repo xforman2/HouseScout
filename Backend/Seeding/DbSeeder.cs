@@ -25,7 +25,7 @@ public class DbSeeder
                 .RuleFor(e => e.Surface, f => f.Random.Double(10, 100))
                 .RuleFor(e => e.EstateType, f => f.PickRandom<EstateType>())
                 .RuleFor(e => e.OfferType, f => f.PickRandom<OfferType>())
-                .RuleFor(e => e.New, f => true);
+                .RuleFor(e => e.IsNew, f => true);
 
             var estates = estateFaker.Generate(200);
 
