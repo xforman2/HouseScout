@@ -20,7 +20,7 @@ public class DataFilter
     )
     {
         var query = _context.Estates.AsQueryable();
-        
+
         // we want to process only new data if user is not new,
         // and all data if user is new
         if (!isNewUser)
@@ -28,12 +28,12 @@ public class DataFilter
             query = query.Where(e => e.IsNew);
         }
         query = query.Where(e =>
-            e.Price >= priceMin &&
-            e.Price <= priceMax &&
-            e.Surface >= surfaceMin &&
-            e.Surface <= surfaceMax
+            e.Price >= priceMin
+            && e.Price <= priceMax
+            && e.Surface >= surfaceMin
+            && e.Surface <= surfaceMax
         );
-        
+
         return query.ToList();
     }
 }

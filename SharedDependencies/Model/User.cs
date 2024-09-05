@@ -15,8 +15,8 @@ public class User
     public EstateType EstateType { get; set; }
 
     public OfferType OfferType { get; set; }
-    
-    public bool IsNew  { get; set; }
+
+    public bool IsNew { get; set; }
 
     public User(
         long userId,
@@ -26,7 +26,8 @@ public class User
         int maxSurface,
         EstateType estateType,
         OfferType offerType,
-        bool isNew)
+        bool isNew
+    )
     {
         UserId = userId;
         MinPrice = minPrice;
