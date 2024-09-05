@@ -37,8 +37,17 @@ namespace DiscordBot.Services
                         dbUser.MinPrice,
                         dbUser.MaxPrice,
                         dbUser.MinSurface,
-                        dbUser.MaxSurface
+                        dbUser.MaxSurface,
+                        dbUser.IsNew
                     );
+                    // We need to update the new flag for all user that have it as true to false.
+                    // Because of the AsNoTracking() we need to update it like this
+                    if (dbUser.IsNew)
+                    {
+                        dbUser.IsNew = false;
+                        _context.Users.Attach(dbUser);
+                        _context.Entry(dbUser).Property(u => u.IsNew).IsModified = true;
+                    }
 
                     var messages = PrepareMessages(estateData);
 
@@ -48,6 +57,7 @@ namespace DiscordBot.Services
                     }
                 }
             }
+            await _context.SaveChangesAsync();
         }
 
         private List<string> PrepareMessages(List<Estate> estateData)
