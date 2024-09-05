@@ -4,6 +4,7 @@ using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using DiscordBot.Filters;
+using DiscordBot.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,6 +56,7 @@ class Program
 
         var rabbitMqService = host.Services.GetRequiredService<RabbitMQService>();
         rabbitMqService.StartListening();
+
         await Task.Delay(-1); // Keep the bot running
     }
 
@@ -87,7 +89,8 @@ class Program
                         )
                         .AddSingleton<CommandService>()
                         .AddScoped<DataFilter>()
-                        .AddSingleton<RabbitMQService>();
+                        .AddSingleton<RabbitMQService>()
+                        .AddSingleton<IMessageHandler, DiscordMessageHandler>();
                 }
             );
 

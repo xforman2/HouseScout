@@ -2,5 +2,5 @@ namespace SharedDependencies.Services;
 
 public interface IMessageHandler
 {
-    void HandleMessage();
+    Task HandleMessageAsync();
 }

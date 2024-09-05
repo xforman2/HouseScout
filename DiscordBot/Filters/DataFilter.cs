@@ -20,7 +20,8 @@ public class DataFilter
     {
         return _context
             .Estates.Where(e =>
-                e.Price >= priceMin
+                e.New
+                && e.Price >= priceMin
                 && e.Price <= priceMax
                 && e.Surface >= surfaceMin
                 && e.Surface <= surfaceMax

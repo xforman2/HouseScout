@@ -46,15 +46,16 @@ public class RabbitMQService : IDisposable
     public void StartListening()
     {
         var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += (ch, ea) =>
+        consumer.Received += async (ch, ea) =>
         {
             if (_messageHandler != null)
             {
-                _messageHandler.HandleMessage();
+                await _messageHandler.HandleMessageAsync();
             }
 
             _channel.BasicAck(ea.DeliveryTag, false);
         };
+        _channel.BasicConsume(_queueName, false, consumer);
     }
 
     public void Dispose()
