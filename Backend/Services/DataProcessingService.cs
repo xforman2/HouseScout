@@ -48,7 +48,7 @@ public class DataProcessingService
         {
             if (!existingEstates.ContainsKey(estate.ApiId))
             {
-                estate.New = true;
+                estate.IsNew = true;
                 estatesToAdd.Add(estate);
             }
         }
@@ -57,7 +57,7 @@ public class DataProcessingService
         {
             if (fetchedEstatesDictionary.ContainsKey(estate.ApiId))
             {
-                estate.New = false;
+                estate.IsNew = false;
             }
             else
             {

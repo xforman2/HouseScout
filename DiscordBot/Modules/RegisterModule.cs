@@ -111,10 +111,12 @@ namespace DiscordBot.Modules
                     MinSurface,
                     MaxSurface,
                     EstateType,
-                    OfferType
+                    OfferType,
+                    true
                 )
             );
             await _context.SaveChangesAsync();
+
             await RespondAsync(
                 $"You have been registered with the following preferences:\n"
                     + $"**Offer Type:** {OfferType}\n"

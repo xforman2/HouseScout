@@ -11,7 +11,7 @@ using SharedDependencies.Model;
 namespace SharedDependencies.Migrations
 {
     [DbContext(typeof(HouseScoutContext))]
-    [Migration("20240904075711_InitialMigration")]
+    [Migration("20240905123213_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -24,7 +24,7 @@ namespace SharedDependencies.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("HouseScout.Model.Estate", b =>
+            modelBuilder.Entity("SharedDependencies.Model.Estate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,12 +46,12 @@ namespace SharedDependencies.Migrations
                     b.Property<int>("EstateType")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsNew")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Link")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("New")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("OfferType")
                         .HasColumnType("integer");
@@ -77,6 +77,9 @@ namespace SharedDependencies.Migrations
 
                     b.Property<int>("EstateType")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("IsNew")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("MaxPrice")
                         .HasColumnType("integer");

@@ -12,7 +12,7 @@ public class Estate
     public EstateType EstateType { get; set; }
     public OfferType OfferType { get; set; }
 
-    public bool New { get; set; }
+    public bool IsNew { get; set; }
 
     // for seeding to work, do not remove
     public Estate() { }

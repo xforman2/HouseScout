@@ -29,7 +29,7 @@ namespace SharedDependencies.Migrations
                     Surface = table.Column<double>(type: "double precision", nullable: false),
                     EstateType = table.Column<int>(type: "integer", nullable: false),
                     OfferType = table.Column<int>(type: "integer", nullable: false),
-                    New = table.Column<bool>(type: "boolean", nullable: false),
+                    IsNew = table.Column<bool>(type: "boolean", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -53,6 +53,7 @@ namespace SharedDependencies.Migrations
                     MaxSurface = table.Column<int>(type: "integer", nullable: false),
                     EstateType = table.Column<int>(type: "integer", nullable: false),
                     OfferType = table.Column<int>(type: "integer", nullable: false),
+                    IsNew = table.Column<bool>(type: "boolean", nullable: false),
                 },
                 constraints: table =>
                 {
