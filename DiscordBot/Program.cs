@@ -56,6 +56,18 @@ class Program
 
         var rabbitMqService = host.Services.GetRequiredService<RabbitMQService>();
         rabbitMqService.StartListening();
+        
+        using (var scope = host.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+
+            var context = services.GetRequiredService<HouseScoutContext>();
+            if ((await context.Database.GetPendingMigrationsAsync()).Any())
+            {
+                await context.Database.MigrateAsync();
+            }
+            
+        }
 
         await Task.Delay(-1); // Keep the bot running
     }

@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Interactions;
 using DiscordBot.Filters;
+using Microsoft.EntityFrameworkCore;
 using SharedDependencies.Model;
 
 namespace DiscordBot.Modules
@@ -15,7 +16,7 @@ namespace DiscordBot.Modules
         private static OfferType OfferType { get; set; }
         private static EstateType EstateType { get; set; }
 
-        private static HouseScoutContext _context;
+        private readonly HouseScoutContext _context;
 
         public RegisterModule(DataFilter filter, HouseScoutContext context)
         {
@@ -129,7 +130,7 @@ namespace DiscordBot.Modules
         [SlashCommand("unregister", "Unregister your notifications")]
         public async Task Unregister()
         {
-            var user = _context.Users.FirstOrDefault(u => (ulong)u.UserId == Context.User.Id);
+            var user = _context.Users.AsNoTracking().FirstOrDefault(u => (ulong)u.UserId == Context.User.Id);
             if (user is null)
             {
                 await RespondAsync("User is not registered yet");
