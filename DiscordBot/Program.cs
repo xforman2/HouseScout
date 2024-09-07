@@ -56,7 +56,7 @@ class Program
 
         var rabbitMqService = host.Services.GetRequiredService<RabbitMQService>();
         rabbitMqService.StartListening();
-        
+
         using (var scope = host.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
@@ -66,7 +66,6 @@ class Program
             {
                 await context.Database.MigrateAsync();
             }
-            
         }
 
         await Task.Delay(-1); // Keep the bot running
