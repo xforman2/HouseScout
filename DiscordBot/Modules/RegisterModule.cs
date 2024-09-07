@@ -3,12 +3,12 @@ using Discord.Interactions;
 using DiscordBot.Filters;
 using Microsoft.EntityFrameworkCore;
 using SharedDependencies.Model;
+using SharedDependencies.Services;
 
 namespace DiscordBot.Modules
 {
     public class RegisterModule : InteractionModuleBase<SocketInteractionContext>
     {
-        private readonly DataFilter _filter;
         private static int MinPrice { get; set; }
         private static int MaxPrice { get; set; }
         private static int MinSurface { get; set; }
@@ -16,12 +16,11 @@ namespace DiscordBot.Modules
         private static OfferType OfferType { get; set; }
         private static EstateType EstateType { get; set; }
 
-        private readonly HouseScoutContext _context;
+        private readonly IDbContextFactory<HouseScoutContext> _contextFactory;
 
-        public RegisterModule(DataFilter filter, HouseScoutContext context)
+        public RegisterModule(IDbContextFactory<HouseScoutContext> contextFactory)
         {
-            _filter = filter;
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public class EstateModal : IModal
@@ -33,12 +32,7 @@ namespace DiscordBot.Modules
             public string MinPriceInput { get; set; }
 
             [InputLabel("Max Price")]
-            [ModalTextInput(
-                "max_price",
-                placeholder: "99999999",
-                maxLength: 20,
-                initValue: "20000"
-            )]
+            [ModalTextInput("max_price", placeholder: "99999999", maxLength: 20, initValue: "20000")]
             public string MaxPriceInput { get; set; }
 
             [InputLabel("Min Surface Area (m ^ 2)")]
@@ -53,14 +47,17 @@ namespace DiscordBot.Modules
         [SlashCommand("register", "Register your preferences to receive notifications")]
         public async Task Register()
         {
-            var user = _context.Users.FirstOrDefault(u => (ulong)u.UserId == Context.User.Id);
-            if (user is null)
+            await using (var context = await _contextFactory.CreateDbContextAsync())
             {
-                await RespondWithModalAsync<EstateModal>("registerModal");
-            }
-            else
-            {
-                await RespondAsync("User already registered");
+                var user = context.Users.FirstOrDefault(u => (ulong)u.UserId == Context.User.Id);
+                if (user is null)
+                {
+                    await RespondWithModalAsync<EstateModal>("registerModal");
+                }
+                else
+                {
+                    await RespondAsync("User already registered");
+                }
             }
         }
 
@@ -80,7 +77,7 @@ namespace DiscordBot.Modules
 
             var builder = new ComponentBuilder().WithSelectMenu(estateSelectMenu);
 
-            await RespondAsync("Please select a estate type:", components: builder.Build());
+            await RespondAsync("Please select an estate type:", components: builder.Build());
         }
 
         [ComponentInteraction("estateType")]
@@ -96,50 +93,56 @@ namespace DiscordBot.Modules
 
             var builder = new ComponentBuilder().WithSelectMenu(offerSelectMenu);
 
-            await RespondAsync("Please select a offer type:", components: builder.Build());
+            await RespondAsync("Please select an offer type:", components: builder.Build());
         }
 
         [ComponentInteraction("offerType")]
         public async Task HandleOfferTypeSelect(string[] selectedValues)
         {
             OfferType = selectedValues[0] == "sale" ? OfferType.SALE : OfferType.RENT;
-            _context.Users.Add(
-                new User(
-                    //Postgres allows only this:  identity column type must be smallint, integer, or bigint
-                    (long)Context.User.Id,
-                    MinPrice,
-                    MaxPrice,
-                    MinSurface,
-                    MaxSurface,
-                    EstateType,
-                    OfferType,
-                    true
-                )
-            );
-            await _context.SaveChangesAsync();
+
+            await using (var context = await _contextFactory.CreateDbContextAsync())
+            {
+                context.Users.Add(
+                    new User(
+                        (long)Context.User.Id,
+                        MinPrice,
+                        MaxPrice,
+                        MinSurface,
+                        MaxSurface,
+                        EstateType,
+                        OfferType,
+                        true
+                    )
+                );
+                await context.SaveChangesAsync();
+            }
 
             await RespondAsync(
                 $"You have been registered with the following preferences:\n"
-                    + $"**Offer Type:** {OfferType}\n"
-                    + $"**Price Range:** {MinPrice} - {MaxPrice}\n"
-                    + $"**Surface Area Range:** {MinSurface} - {MaxSurface}\n"
-                    + $"**Estate Type:** {EstateType}"
+                + $"**Offer Type:** {OfferType}\n"
+                + $"**Price Range:** {MinPrice} - {MaxPrice}\n"
+                + $"**Surface Area Range:** {MinSurface} - {MaxSurface}\n"
+                + $"**Estate Type:** {EstateType}"
             );
         }
 
         [SlashCommand("unregister", "Unregister your notifications")]
         public async Task Unregister()
         {
-            var user = _context.Users.AsNoTracking().FirstOrDefault(u => (ulong)u.UserId == Context.User.Id);
-            if (user is null)
+            await using (var context = await _contextFactory.CreateDbContextAsync())
             {
-                await RespondAsync("User is not registered yet");
-            }
-            else
-            {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
-                await RespondAsync("User unregistered");
+                var user = context.Users.FirstOrDefault(u => (ulong)u.UserId == Context.User.Id);
+                if (user is null)
+                {
+                    await RespondAsync("User is not registered yet");
+                }
+                else
+                {
+                    context.Users.Remove(user);
+                    await context.SaveChangesAsync();
+                    await RespondAsync("User unregistered");
+                }
             }
         }
     }
