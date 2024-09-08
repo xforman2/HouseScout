@@ -10,54 +10,54 @@ namespace DiscordBot.Services
     public class DiscordMessageHandler : IMessageHandler
     {
         private readonly DiscordSocketClient _client;
-        private readonly HouseScoutContext _context;
+        private readonly IDbContextFactory<HouseScoutContext> _contextFactory;
         private readonly DataFilter _dataFilter;
 
         public DiscordMessageHandler(
             DiscordSocketClient client,
-            HouseScoutContext context,
-            DataFilter dataFilter
+            DataFilter dataFilter,
+            IDbContextFactory<HouseScoutContext> contextFactory
         )
         {
             _client = client;
-            _context = context;
             _dataFilter = dataFilter;
+            _contextFactory = contextFactory;
         }
 
         public async Task HandleMessageAsync()
         {
-            var users = await _context.Users.AsNoTracking().ToListAsync();
-            foreach (var dbUser in users)
+            await using (var context = await _contextFactory.CreateDbContextAsync())
             {
-                var user = await _client.GetUserAsync((ulong)dbUser.UserId);
-                if (user != null)
+                var users = await context.Users.ToListAsync();
+                foreach (var dbUser in users)
                 {
-                    var dmChannel = await user.CreateDMChannelAsync();
-                    var estateData = _dataFilter.SurfacePriceFilter(
-                        dbUser.MinPrice,
-                        dbUser.MaxPrice,
-                        dbUser.MinSurface,
-                        dbUser.MaxSurface,
-                        dbUser.IsNew
-                    );
-                    // We need to update the new flag for all user that have it as true to false.
-                    // Because of the AsNoTracking() we need to update it like this
-                    if (dbUser.IsNew)
+                    var user = await _client.GetUserAsync((ulong)dbUser.UserId);
+                    if (user != null)
                     {
-                        dbUser.IsNew = false;
-                        _context.Users.Attach(dbUser);
-                        _context.Entry(dbUser).Property(u => u.IsNew).IsModified = true;
-                    }
+                        var dmChannel = await user.CreateDMChannelAsync();
+                        var estateData = _dataFilter.SurfacePriceFilter(
+                            dbUser.MinPrice,
+                            dbUser.MaxPrice,
+                            dbUser.MinSurface,
+                            dbUser.MaxSurface,
+                            dbUser.IsNew
+                        );
 
-                    var messages = PrepareMessages(estateData);
+                        if (dbUser.IsNew)
+                        {
+                            dbUser.IsNew = false;
+                        }
 
-                    foreach (var message in messages)
-                    {
-                        await dmChannel.SendMessageAsync(message);
+                        var messages = PrepareMessages(estateData);
+
+                        foreach (var message in messages)
+                        {
+                            await dmChannel.SendMessageAsync(message);
+                        }
                     }
                 }
+                await context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
         }
 
         private List<string> PrepareMessages(List<Estate> estateData)

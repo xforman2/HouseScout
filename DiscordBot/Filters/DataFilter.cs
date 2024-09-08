@@ -1,39 +1,46 @@
+using Microsoft.EntityFrameworkCore;
 using SharedDependencies.Model;
+using SharedDependencies.Services;
 
-namespace DiscordBot.Filters;
-
-public class DataFilter
+namespace DiscordBot.Filters
 {
-    private HouseScoutContext _context;
-
-    public DataFilter(HouseScoutContext context)
+    public class DataFilter
     {
-        _context = context;
-    }
+        private readonly IDbContextFactory<HouseScoutContext> _contextFactory;
 
-    public List<Estate> SurfacePriceFilter(
-        int priceMin,
-        int priceMax,
-        int surfaceMin,
-        int surfaceMax,
-        bool isNewUser
-    )
-    {
-        var query = _context.Estates.AsQueryable();
-
-        // we want to process only new data if user is not new,
-        // and all data if user is new
-        if (!isNewUser)
+        public DataFilter(IDbContextFactory<HouseScoutContext> contextFactory)
         {
-            query = query.Where(e => e.IsNew);
+            _contextFactory = contextFactory;
         }
-        query = query.Where(e =>
-            e.Price >= priceMin
-            && e.Price <= priceMax
-            && e.Surface >= surfaceMin
-            && e.Surface <= surfaceMax
-        );
 
-        return query.ToList();
+        public List<Estate> SurfacePriceFilter(
+            int priceMin,
+            int priceMax,
+            int surfaceMin,
+            int surfaceMax,
+            bool isNewUser
+        )
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var query = context.Estates.AsQueryable();
+
+                // Process only new data if the user is not new,
+                // and all data if the user is new
+                if (!isNewUser)
+                {
+                    query = query.Where(e => e.IsNew);
+                }
+
+                query = query.Where(e =>
+                    e.Price >= priceMin
+                    && e.Price <= priceMax
+                    && e.Surface >= surfaceMin
+                    && e.Surface <= surfaceMax
+                );
+
+                return query.ToList();
+            }
+        }
     }
 }
