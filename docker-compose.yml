@@ -33,25 +33,25 @@ services:
 
   # Backend service
   backend:
-    image: backend-image  # Replace with your backend image name
+    image: backend-image 
     depends_on:
       db:
-        condition: service_healthy  # Wait for PostgreSQL health check
+        condition: service_healthy  
       rabbitmq:
-        condition: service_healthy  # Wait for RabbitMQ health check
+        condition: service_healthy  
     ports:
-      - "5000:80"  # Assuming backend listens on port 80 inside the container
+      - "5000:80" 
 
   # DiscordBot service
   discordbot:
-    image: discordbot-image  # Replace with your DiscordBot image name
+    image: discordbot-image  
     depends_on:
       backend:
-        condition: service_started  # Wait for backend to start
+        condition: service_started  
       rabbitmq:
-        condition: service_healthy  # Wait for RabbitMQ health check
+        condition: service_healthy 
     ports:
-        - "8080:80"  # Assuming DiscordBot listens on port 80 inside the container
+        - "8080:80"  
 
 # Volumes for data persistence
 volumes:

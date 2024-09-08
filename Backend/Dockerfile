@@ -31,14 +31,10 @@ WORKDIR /App
 # Copy the build output from the previous stage
 COPY --from=build-env /App/Backend/out .
 
-# Copy the crontab file into the image
+# Copy the crontab file into the image and give exec rights
 COPY ./Backend/crontab /etc/cron.d/crontab
-
-# Give execution rights on the crontab file
 RUN chmod 0644 /etc/cron.d/crontab
 
 # Apply the crontab
 RUN crontab /etc/cron.d/crontab
-
-# Run cron in the foreground
 CMD ["cron", "&&",  "tail", "-f", "/var/log/cron.log"]
