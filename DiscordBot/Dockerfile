@@ -26,6 +26,5 @@ WORKDIR /App
 
 # Copy the build output from the previous stage
 COPY --from=build-env /App/DiscordBot/out .
-    
-# Set the entry point for the app
+
 ENTRYPOINT ["dotnet", "DiscordBot.dll"]

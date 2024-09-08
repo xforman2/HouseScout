@@ -32,7 +32,12 @@ namespace DiscordBot.Modules
             public string MinPriceInput { get; set; }
 
             [InputLabel("Max Price")]
-            [ModalTextInput("max_price", placeholder: "99999999", maxLength: 20, initValue: "20000")]
+            [ModalTextInput(
+                "max_price",
+                placeholder: "99999999",
+                maxLength: 20,
+                initValue: "20000"
+            )]
             public string MaxPriceInput { get; set; }
 
             [InputLabel("Min Surface Area (m ^ 2)")]
@@ -120,10 +125,10 @@ namespace DiscordBot.Modules
 
             await RespondAsync(
                 $"You have been registered with the following preferences:\n"
-                + $"**Offer Type:** {OfferType}\n"
-                + $"**Price Range:** {MinPrice} - {MaxPrice}\n"
-                + $"**Surface Area Range:** {MinSurface} - {MaxSurface}\n"
-                + $"**Estate Type:** {EstateType}"
+                    + $"**Offer Type:** {OfferType}\n"
+                    + $"**Price Range:** {MinPrice} - {MaxPrice}\n"
+                    + $"**Surface Area Range:** {MinSurface} - {MaxSurface}\n"
+                    + $"**Estate Type:** {EstateType}"
             );
         }
 

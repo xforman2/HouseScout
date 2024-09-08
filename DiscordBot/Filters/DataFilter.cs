@@ -1,5 +1,5 @@
-using SharedDependencies.Model;
 using Microsoft.EntityFrameworkCore;
+using SharedDependencies.Model;
 using SharedDependencies.Services;
 
 namespace DiscordBot.Filters

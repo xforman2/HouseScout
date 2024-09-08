@@ -97,9 +97,12 @@ class Program
                             options.UseNpgsql(
                                 configuration.GetConnectionString("DefaultConnection")
                             )
-                        ).AddDbContextFactory<HouseScoutContext>(options =>
+                        )
+                        .AddDbContextFactory<HouseScoutContext>(options =>
                             options.UseNpgsql(
-                                    configuration.GetConnectionString("DefaultConnection")))
+                                configuration.GetConnectionString("DefaultConnection")
+                            )
+                        )
                         .AddSingleton<CommandService>()
                         .AddScoped<DataFilter>()
                         .AddSingleton<RabbitMQService>()

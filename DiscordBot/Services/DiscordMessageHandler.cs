@@ -15,7 +15,9 @@ namespace DiscordBot.Services
 
         public DiscordMessageHandler(
             DiscordSocketClient client,
-            DataFilter dataFilter, IDbContextFactory<HouseScoutContext> contextFactory)
+            DataFilter dataFilter,
+            IDbContextFactory<HouseScoutContext> contextFactory
+        )
         {
             _client = client;
             _dataFilter = dataFilter;
@@ -24,7 +26,7 @@ namespace DiscordBot.Services
 
         public async Task HandleMessageAsync()
         {
-            await using (var context =  await _contextFactory.CreateDbContextAsync())
+            await using (var context = await _contextFactory.CreateDbContextAsync())
             {
                 var users = await context.Users.ToListAsync();
                 foreach (var dbUser in users)
@@ -40,7 +42,7 @@ namespace DiscordBot.Services
                             dbUser.MaxSurface,
                             dbUser.IsNew
                         );
-                        
+
                         if (dbUser.IsNew)
                         {
                             dbUser.IsNew = false;
